@@ -20,5 +20,4 @@ export const isFocus = () => {
   }
   return !document[hiddenProperty];
 };
-const unit = () => {};
-module.exports = unit;
+export const unit = () => {};

@@ -1,4 +1,4 @@
-import music from "@/store/music";
+import { music } from "@/unit/music";
 
 const states = {
   //自动下落setTimeout变量
