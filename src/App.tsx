@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
 import "@/App.css";
 import { useAppDispatch, useAppSelector } from "@/hook/storeHook";
-import { StoreReducer } from "@/store";
 import { useResize } from "@/hook/useResize";
+import { StoreReducer } from "@/store";
+import { useEffect, useState } from "react";
+import { changeFocus } from "./store/focus";
 import { isFocus, visibilityChangeEvent } from "./unit";
 
 function App() {
@@ -15,7 +16,7 @@ function App() {
       document.addEventListener(
         visibilityChangeEvent,
         () => {
-          dispatch("", isFocus());
+          dispatch(changeFocus(isFocus()));
         },
         false
       );
@@ -23,7 +24,7 @@ function App() {
     return document.removeEventListener(
       visibilityChangeEvent,
       () => {
-        dispatch("", isFocus());
+        dispatch(changeFocus(isFocus()));
       },
       false
     );

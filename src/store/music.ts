@@ -1,4 +1,3 @@
-import type { RootState } from "@/store";
 import { lastRecord } from "@/unit/const";
 import { hasWebAudioAPI } from "@/unit/music";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
@@ -9,7 +8,7 @@ export interface MusicState {
 
 // 使用该类型定义初始 state
 const initialState: MusicState = {
-  value: lastRecord ? !!lastRecord : true,
+  value: lastRecord && lastRecord.music !== undefined ? !!lastRecord.music : true,
 };
 if (!hasWebAudioAPI.data) {
   initialState.value = false;
