@@ -6,16 +6,14 @@ export interface DropState {
 }
 
 // 使用该类型定义初始 state
-const initialState: DropState = {
-  value: lastRecord && lastRecord.drop  ? !!lastRecord.drop : false,
-};
+const initialState: DropState = lastRecord && lastRecord.drop ? !!lastRecord.drop : false;
 export const dropSlice = createSlice({
   name: "drop",
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeDrop: (state, action: PayloadAction<boolean>) => {
-      state.value = action.payload;
+      state = action.payload;
     },
   },
 });

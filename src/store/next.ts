@@ -7,16 +7,14 @@ export interface NextState {
 }
 
 // 使用该类型定义初始 state
-const initialState: NextState = {
-  value: lastRecord && blockType.indexOf(lastRecord.next) !== -1 ? lastRecord.next : getNextType(),
-};
+const initialState: NextState = lastRecord && blockType.indexOf(lastRecord.next) !== -1 ? lastRecord.next : getNextType();
 export const nextSlice = createSlice({
   name: "next",
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeNext: (state, action: PayloadAction<string>) => {
-      state.value = action.payload;
+      state = action.payload;
     },
   },
 });

@@ -6,16 +6,14 @@ export interface PauseState {
 }
 
 // 使用该类型定义初始 state
-const initialState: PauseState = {
-  value: lastRecord && lastRecord.pause  ? !!lastRecord.pause : false,
-};
+const initialState: PauseState = lastRecord && lastRecord.pause ? !!lastRecord.pause : false;
 export const pauseSlice = createSlice({
   name: "pause",
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changePause: (state, action: PayloadAction<boolean>) => {
-      state.value = action.payload;
+      state = action.payload;
     },
   },
 });

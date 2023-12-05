@@ -7,9 +7,7 @@ export interface MatrixState {
 }
 
 // 使用该类型定义初始 state
-const initialState: MatrixState = {
-  value: lastRecord && Array.isArray(lastRecord.matrix) ? List(lastRecord.matrix.map((e) => List(e))) : blankMatrix,
-};
+const initialState: MatrixState = lastRecord && Array.isArray(lastRecord.matrix) ? List(lastRecord.matrix.map((e) => List(e))) : blankMatrix;
 
 export const matrixSlice = createSlice({
   name: "matrix",
@@ -17,7 +15,7 @@ export const matrixSlice = createSlice({
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeMatrix: (state, action: PayloadAction<number[][]>) => {
-      state.value = action.payload;
+      state = action.payload;
     },
   },
 });

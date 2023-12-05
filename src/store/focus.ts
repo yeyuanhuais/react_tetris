@@ -6,16 +6,14 @@ export interface FocusState {
 }
 
 // 使用该类型定义初始 state
-const initialState: FocusState = {
-  value: isFocus(),
-};
+const initialState: FocusState = isFocus();
 export const focusSlice = createSlice({
   name: "focus",
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeFocus: (state, action: PayloadAction<boolean>) => {
-      state.value = action.payload;
+      state = action.payload;
     },
   },
 });

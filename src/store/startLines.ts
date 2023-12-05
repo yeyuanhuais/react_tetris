@@ -6,11 +6,10 @@ export interface StartLinesState {
 }
 
 // 使用该类型定义初始 state
-const initialState: StartLinesState = {
-  value: lastRecord && !isNaN(parseInt(lastRecord.startLines, 10)) ? parseInt(lastRecord.startLines, 10) : 0,
-};
-if (initialState.value < 0 || initialState.value > 10) {
-  initialState.value = 0;
+const initialState: StartLinesState = lastRecord && !isNaN(parseInt(lastRecord.startLines, 10)) ? parseInt(lastRecord.startLines, 10) : 0;
+
+if (initialState < 0 || initialState > 10) {
+  initialState = 0;
 }
 export const startLinesSlice = createSlice({
   name: "startLines",
@@ -18,7 +17,7 @@ export const startLinesSlice = createSlice({
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeStartLines: (state, action: PayloadAction<number>) => {
-      state.value = action.payload;
+      state = action.payload;
     },
   },
 });

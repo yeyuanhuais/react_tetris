@@ -7,11 +7,9 @@ export interface MusicState {
 }
 
 // 使用该类型定义初始 state
-const initialState: MusicState = {
-  value: lastRecord && lastRecord.music !== undefined ? !!lastRecord.music : true,
-};
+const initialState: MusicState = lastRecord && lastRecord.music !== undefined ? !!lastRecord.music : true;
 if (!hasWebAudioAPI.data) {
-  initialState.value = false;
+  initialState = false;
 }
 export const musicSlice = createSlice({
   name: "music",
@@ -20,9 +18,9 @@ export const musicSlice = createSlice({
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeMusic: (state, action: PayloadAction<boolean>) => {
       if (!hasWebAudioAPI.data) {
-        state.value = false;
+        state = false;
       }
-      state.value = action.payload;
+      state = action.payload;
     },
   },
 });

@@ -6,11 +6,9 @@ export interface SpeedStartState {
 }
 
 // 使用该类型定义初始 state
-const initialState: SpeedStartState = {
-  value: lastRecord && !isNaN(parseInt(lastRecord.speedStart, 10)) ? parseInt(lastRecord.speedStart, 10) : 1,
-};
-if (initialState.value < 1 || initialState.value > 6) {
-  initialState.value = 1;
+const initialState: SpeedStartState = lastRecord && !isNaN(parseInt(lastRecord.speedStart, 10)) ? parseInt(lastRecord.speedStart, 10) : 1;
+if (initialState < 1 || initialState > 6) {
+  initialState = 1;
 }
 export const speedStartSlice = createSlice({
   name: "speedStart",
@@ -18,7 +16,7 @@ export const speedStartSlice = createSlice({
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeSpeedStart: (state, action: PayloadAction<number>) => {
-      state.value = action.payload;
+      state = action.payload;
     },
   },
 });

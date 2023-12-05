@@ -6,16 +6,14 @@ export interface LockState {
 }
 
 // 使用该类型定义初始 state
-const initialState: LockState = {
-  value: lastRecord && lastRecord.lock  ? !!lastRecord.lock : false,
-};
+const initialState: LockState = lastRecord && lastRecord.lock ? !!lastRecord.lock : false;
 export const lockSlice = createSlice({
   name: "lock",
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeLock: (state, action: PayloadAction<boolean>) => {
-      state.value = action.payload;
+      state = action.payload;
     },
   },
 });

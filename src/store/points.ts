@@ -6,13 +6,11 @@ export interface PointsState {
 }
 
 // 使用该类型定义初始 state
-const initialState: PointsState = {
-  value: lastRecord && isNaN(parseInt(lastRecord.points, 10)) ? parseInt(lastRecord.points, 10) : 0,
-};
-if (initialState.value < 0) {
-  initialState.value = 0;
-} else if (initialState.value > maxPoint) {
-  initialState.value = maxPoint;
+const initialState: PointsState = lastRecord && isNaN(parseInt(lastRecord.points, 10)) ? parseInt(lastRecord.points, 10) : 0;
+if (initialState < 0) {
+  initialState = 0;
+} else if (initialState > maxPoint) {
+  initialState = maxPoint;
 }
 export const pointsSlice = createSlice({
   name: "points",
@@ -20,7 +18,7 @@ export const pointsSlice = createSlice({
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changePoints: (state, action: PayloadAction<number>) => {
-      state.value = action.payload > maxPoint ? maxPoint : action.payload;
+      state = action.payload > maxPoint ? maxPoint : action.payload;
     },
   },
 });

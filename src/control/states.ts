@@ -50,17 +50,20 @@ const getStartMatrix = (startLines: number) => {
 };
 
 const dispatch = useAppDispatch();
-const speedStartState = useAppSelector((state: StoreReducer) => state.speedStart.value);
-const startLinesState = useAppSelector((state: StoreReducer) => state.startLines.value);
-const nextState = useAppSelector((state: StoreReducer) => state.next.value);
-const curState = useAppSelector((state: StoreReducer) => state.cur.value);
-const matrixState = useAppSelector((state: StoreReducer) => state.matrix.value);
-const speedRunState = useAppSelector((state: StoreReducer) => state.speedRun.value);
-const pointsState = useAppSelector((state: StoreReducer) => state.points.value);
-const resetState = useAppSelector((state: StoreReducer) => state.reset.value);
-const pauseState = useAppSelector((state: StoreReducer) => state.pause.value);
-const clearLinesState = useAppSelector((state: StoreReducer) => state.clearLines.value);
-const maxState = useAppSelector((state: StoreReducer) => state.max.value);
+const {
+  speedStart: speedStartState,
+  startLines: startLinesState,
+  next: nextState,
+  cur: curState,
+  matrix: matrixState,
+  speedRun: speedRunState,
+  points: pointsState,
+  reset: resetState,
+  pause: pauseState,
+  clearLines: clearLinesState,
+  max: maxState,
+} = useAppSelector((state: StoreReducer) => state);
+
 export const states = {
   //自动下落setTimeout变量
   fallInterval: null,

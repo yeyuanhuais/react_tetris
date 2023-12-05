@@ -1,5 +1,5 @@
 import { List } from "immutable";
-
+import i18n from "../../i18n.json";
 interface LastRecordProps {
   music: boolean;
   points: number;
@@ -86,3 +86,15 @@ export const blankMatrix = (() => {
   }
   return List(matrix);
 })();
+export const getParm = (param) => {
+  const r = new RegExp(`\\?(?:.+&)?${param}=(.*?)(?:&.*)?$`);
+  const m = window.location.toString().match(r);
+  return m ? decodeURI(m[1]) : "";
+};
+export const lan = (() => {
+  let l = getParm("len").toLowerCase();
+  l = i18n.lan.indexOf(l) === -1 ? i18n.default : l;
+  return l;
+})();
+export const i18nData = i18n.data;
+document.title = i18n.data.title[lan];
