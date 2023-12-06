@@ -1,9 +1,7 @@
 import { lastRecord } from "@/unit/const";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
-export interface DropState {
-  value: boolean;
-}
+export type DropState =boolean
 
 // 使用该类型定义初始 state
 const initialState: DropState = lastRecord && lastRecord.drop ? !!lastRecord.drop : false;
@@ -12,7 +10,7 @@ export const dropSlice = createSlice({
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
-    changeDrop: (state, action: PayloadAction<boolean>) => {
+    changeDrop: (state, action: PayloadAction<DropState>) => {
       state = action.payload;
     },
   },

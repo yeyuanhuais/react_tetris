@@ -1,9 +1,7 @@
+import { StoreReducer } from "@/store";
 import { List } from "immutable";
 import i18n from "../../i18n.json";
-interface LastRecordProps {
-  music: boolean;
-  points: number;
-}
+
 export const StorageKey = "REACT_TETRIS";
 export const clearPoints = [100, 300, 700, 1500];
 /* 最高分 */
@@ -62,16 +60,16 @@ export const delays = [50, 60, 70, 80, 90, 100];
 export const fillLine = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 export const eachLines = 20; // 每消除eachLines行, 增加速度
 /*  上一把的状态 */
-export const lastRecord: LastRecordProps | boolean = (() => {
-  let data = localStorage.getItem(StorageKey);
-  if (!data) {
-    return false;
-  }
+export const lastRecord = ((): StoreReducer | false => {
   try {
+    let data = localStorage.getItem(StorageKey);
+    if (!data) {
+      return false;
+    }
     data = atob(data);
     data = decodeURIComponent(data);
     data = JSON.parse(data);
-    return data;
+    return data as unknown as StoreReducer;
   } catch (error) {
     if (window.console) {
       window.console.error("读取记录错误", error);
@@ -86,15 +84,16 @@ export const blankMatrix = (() => {
   }
   return List(matrix);
 })();
-export const getParm = (param) => {
+type lanType = "cn" | "en" | "fr" | "fa";
+export const getParm = (param: string): string => {
   const r = new RegExp(`\\?(?:.+&)?${param}=(.*?)(?:&.*)?$`);
   const m = window.location.toString().match(r);
-  return m ? decodeURI(m[1]) : "";
+  return m ? decodeURI(m[1]) : i18n.default;
 };
-export const lan = (() => {
+export const lan = ((): lanType => {
   let l = getParm("len").toLowerCase();
   l = i18n.lan.indexOf(l) === -1 ? i18n.default : l;
-  return l;
+  return l as lanType;
 })();
-export const i18nData = i18n.data;
+export const i18nData: { [key: string]: { [key: string]: string } } = i18n.data;
 document.title = i18n.data.title[lan];

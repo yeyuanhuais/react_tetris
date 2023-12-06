@@ -1,9 +1,9 @@
-import { clearLinesPoint, lastRecord } from "@/unit/const";
+import { lastRecord } from "@/unit/const";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
-
+export type ClearLinesState = number;
 // 使用该类型定义初始 state
-const initialState: number = lastRecord && isNaN(parseInt(lastRecord.clearLines, 10)) ? parseInt(lastRecord.clearLines, 10) : 0;
+let initialState: ClearLinesState = lastRecord && lastRecord.clearLines ? lastRecord.clearLines : 0;
 if (initialState < 0) {
   initialState = 0;
 }
@@ -12,7 +12,7 @@ export const clearLinesSlice = createSlice({
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
-    changeClearLines: (state, action: PayloadAction<number>) => {
+    changeClearLines: (state, action: PayloadAction<ClearLinesState>) => {
       state = action.payload;
     },
   },

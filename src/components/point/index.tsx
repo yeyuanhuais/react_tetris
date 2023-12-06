@@ -2,11 +2,11 @@ import React from 'react';
 import propTypes from 'prop-types';
 
 import Number from '../number';
-import { i18n, lan } from '../../unit/const';
+import { i18nData, lan } from '../../unit/const';
 
-const DF = i18n.point[lan];
-const ZDF = i18n.highestScore[lan];
-const SLDF = i18n.lastRound[lan];
+const DF = i18nData.point[lan];
+const ZDF = i18nData.highestScore[lan];
+const SLDF = i18nData.lastRound[lan];
 
 export default class Point extends React.Component {
   constructor() {

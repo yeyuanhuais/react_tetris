@@ -3,7 +3,7 @@ import cn from 'classnames';
 import propTypes from 'prop-types';
 
 import style from './index.less';
-import { i18n, lan } from '../../unit/const';
+import { i18nData, lan } from '../../unit/const';
 
 export default class Logo extends React.Component {
   constructor() {
@@ -137,7 +137,7 @@ export default class Logo extends React.Component {
     return (
       <div className={style.logo} style={{ display: this.state.display }}>
         <div className={cn({ bg: true, [style.dragon]: true, [this.state.style]: true })} />
-        <p dangerouslySetInnerHTML={{ __html: i18n.titleCenter[lan] }} />
+        <p dangerouslySetInnerHTML={{ __html: i18nData.titleCenter[lan] }} />
       </div>
     );
   }

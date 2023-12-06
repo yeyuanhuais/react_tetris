@@ -1,9 +1,7 @@
 import { lastRecord } from "@/unit/const";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
-export interface PauseState {
-  value: boolean;
-}
+export type PauseState =boolean
 
 // 使用该类型定义初始 state
 const initialState: PauseState = lastRecord && lastRecord.pause ? !!lastRecord.pause : false;
@@ -12,7 +10,7 @@ export const pauseSlice = createSlice({
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
-    changePause: (state, action: PayloadAction<boolean>) => {
+    changePause: (state, action: PayloadAction<PauseState>) => {
       state = action.payload;
     },
   },

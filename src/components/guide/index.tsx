@@ -1,7 +1,7 @@
 import React from 'react';
 import QRCode from 'qrcode';
 import style from './index.less';
-import { transform, i18n, lan } from '../../unit/const';
+import { transform, i18nData, lan } from '../../unit/const';
 import { isMobile } from '../../unit';
 
 
@@ -49,7 +49,7 @@ export default class Guide extends React.Component {
         </div>
         <div className={`${style.guide} ${style.left}`}>
           <p>
-            <a href="https://github.com/chvin/react-tetris" rel="noopener noreferrer" target="_blank" title={i18n.linkTitle[lan]}>{`${i18n.github[lan]}:`}</a><br />
+            <a href="https://github.com/chvin/react-tetris" rel="noopener noreferrer" target="_blank" title={i18nData.linkTitle[lan]}>{`${i18nData.github[lan]}:`}</a><br />
             <iframe
               src="https://ghbtns.com/github-btn.html?user=chvin&repo=react-tetris&type=star&count=true"
               frameBorder="0"
@@ -74,7 +74,7 @@ export default class Guide extends React.Component {
           <div className={`${style.guide} ${style.qr}`}>
             <img
               src={this.state.QRCode}
-              alt={i18n.QRCode[lan]}
+              alt={i18nData.QRCode[lan]}
             />
           </div>
         ) : null }

@@ -1,9 +1,7 @@
 import { lastRecord } from "@/unit/const";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
-export interface ResetState {
-  value: boolean;
-}
+export type ResetState = boolean;
 
 // 使用该类型定义初始 state
 const initialState: ResetState = lastRecord && lastRecord.reset ? !!lastRecord.reset : false;
@@ -12,7 +10,7 @@ export const resetSlice = createSlice({
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
-    changeReset: (state, action: PayloadAction<boolean>) => {
+    changeReset: (state, action: PayloadAction<ResetState>) => {
       state = action.payload;
     },
   },

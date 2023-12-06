@@ -1,12 +1,10 @@
 import { lastRecord, maxPoint } from "@/unit/const";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
-export interface PointsState {
-  value: number;
-}
+export type PointsState = number;
 
 // 使用该类型定义初始 state
-const initialState: PointsState = lastRecord && isNaN(parseInt(lastRecord.points, 10)) ? parseInt(lastRecord.points, 10) : 0;
+let initialState: PointsState = lastRecord && lastRecord.points ? lastRecord.points : 0;
 if (initialState < 0) {
   initialState = 0;
 } else if (initialState > maxPoint) {
@@ -17,7 +15,7 @@ export const pointsSlice = createSlice({
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
-    changePoints: (state, action: PayloadAction<number>) => {
+    changePoints: (state, action: PayloadAction<PointsState>) => {
       state = action.payload > maxPoint ? maxPoint : action.payload;
     },
   },

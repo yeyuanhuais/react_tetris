@@ -1,9 +1,7 @@
 import { lastRecord } from "@/unit/const";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
-export interface LockState {
-  value: boolean;
-}
+export type LockState =boolean
 
 // 使用该类型定义初始 state
 const initialState: LockState = lastRecord && lastRecord.lock ? !!lastRecord.lock : false;
@@ -12,7 +10,7 @@ export const lockSlice = createSlice({
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
-    changeLock: (state, action: PayloadAction<boolean>) => {
+    changeLock: (state, action: PayloadAction<LockState>) => {
       state = action.payload;
     },
   },

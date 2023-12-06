@@ -2,9 +2,7 @@ import { getNextType } from "@/unit";
 import { blockType, lastRecord } from "@/unit/const";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
-export interface NextState {
-  value: string;
-}
+export type NextState =string
 
 // 使用该类型定义初始 state
 const initialState: NextState = lastRecord && blockType.indexOf(lastRecord.next) !== -1 ? lastRecord.next : getNextType();
@@ -13,7 +11,7 @@ export const nextSlice = createSlice({
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
-    changeNext: (state, action: PayloadAction<string>) => {
+    changeNext: (state, action: PayloadAction<NextState>) => {
       state = action.payload;
     },
   },

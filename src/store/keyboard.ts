@@ -1,14 +1,15 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+type KeyBoolean = boolean;
 // 定义 slice state 的类型
 export interface KeyboardState {
-  down: boolean;
-  drop: boolean;
-  left: boolean;
-  music: boolean;
-  pause: boolean;
-  reset: boolean;
-  right: boolean;
-  rotate: boolean;
+  down: KeyBoolean;
+  drop: KeyBoolean;
+  left: KeyBoolean;
+  music: KeyBoolean;
+  pause: KeyBoolean;
+  reset: KeyBoolean;
+  right: KeyBoolean;
+  rotate: KeyBoolean;
 }
 
 // 使用该类型定义初始 state
@@ -18,28 +19,28 @@ export const keyboardSlice = createSlice({
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
-    changeKeyDown: (state, action: PayloadAction<boolean>) => {
+    changeKeyDown: (state, action: PayloadAction<KeyBoolean>) => {
       state.down = action.payload;
     },
-    changeKeyDrop: (state, action: PayloadAction<boolean>) => {
+    changeKeyDrop: (state, action: PayloadAction<KeyBoolean>) => {
       state.drop = action.payload;
     },
-    changeKeyLeft: (state, action: PayloadAction<boolean>) => {
+    changeKeyLeft: (state, action: PayloadAction<KeyBoolean>) => {
       state.left = action.payload;
     },
-    changeKeyMusic: (state, action: PayloadAction<boolean>) => {
+    changeKeyMusic: (state, action: PayloadAction<KeyBoolean>) => {
       state.music = action.payload;
     },
-    changeKeyPause: (state, action: PayloadAction<boolean>) => {
+    changeKeyPause: (state, action: PayloadAction<KeyBoolean>) => {
       state.pause = action.payload;
     },
-    changeKeyReset: (state, action: PayloadAction<boolean>) => {
+    changeKeyReset: (state, action: PayloadAction<KeyBoolean>) => {
       state.reset = action.payload;
     },
-    changeKeyRight: (state, action: PayloadAction<boolean>) => {
+    changeKeyRight: (state, action: PayloadAction<KeyBoolean>) => {
       state.right = action.payload;
     },
-    changeKeyRotate: (state, action: PayloadAction<boolean>) => {
+    changeKeyRotate: (state, action: PayloadAction<KeyBoolean>) => {
       state.rotate = action.payload;
     },
   },

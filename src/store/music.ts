@@ -2,12 +2,10 @@ import { lastRecord } from "@/unit/const";
 import { hasWebAudioAPI } from "@/unit/music";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
-export interface MusicState {
-  value: Boolean;
-}
+export type MusicState =boolean
 
 // 使用该类型定义初始 state
-const initialState: MusicState = lastRecord && lastRecord.music !== undefined ? !!lastRecord.music : true;
+let initialState: MusicState = lastRecord && lastRecord.music !== undefined ? !!lastRecord.music : true;
 if (!hasWebAudioAPI.data) {
   initialState = false;
 }
@@ -16,7 +14,7 @@ export const musicSlice = createSlice({
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
-    changeMusic: (state, action: PayloadAction<boolean>) => {
+    changeMusic: (state, action: PayloadAction<MusicState>) => {
       if (!hasWebAudioAPI.data) {
         state = false;
       }

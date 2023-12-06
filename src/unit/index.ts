@@ -1,16 +1,19 @@
+import { StoreReducer } from "@/store";
+import { AnyAction, ThunkMiddleware } from "@reduxjs/toolkit";
+import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
 import { StorageKey, blockType } from "./const";
 
 /**
- * @description document[hiddenProenty] 可以判断页面是否失去焦点
+ * @description document[hiddenProperty] 可以判断页面是否失去焦点
  */
-const hiddenProperty = (() => {
+const hiddenProperty = ((): string => {
   let names = ["hidden", "webkitHidden", "mozHidden", "msHidden"];
   names = names.filter((e) => e in document);
-  return names.length > 0 ? names[0] : false;
+  return names.length > 0 ? names[0] : "";
 })();
 export const visibilityChangeEvent = (() => {
   if (!hiddenProperty) {
-    return false;
+    return "";
   }
   // 如果属性有前缀, 相应的事件也有前缀
   return hiddenProperty.replace(/hidden/i, "visibilitychange");
@@ -20,7 +23,7 @@ export const isFocus = () => {
   if (!hiddenProperty) {
     return true;
   }
-  return !document[hiddenProperty];
+  return !(document as any)[hiddenProperty];
 };
 
 /* 随机获取下一个方块类型 */
@@ -31,7 +34,7 @@ export const getNextType = () => {
 /* 方块是否能够移动到指定位置 */
 export const want = (
   next: { xy: any; shape: any },
-  matrix: { get: (arg0: any) => { (): any; new (): any; get: { (arg0: any): any; new (): any } } }
+  matrix: { get: (arg0: any) => { (): any; new (): any; get: { (arg0: any): any; new (): any } } },
 ) => {
   const { xy, shape } = next;
   const horizontal = shape.get(0).size;
@@ -77,17 +80,18 @@ export const isOver = (matrix: { get: (arg0: number) => any[] }) => {
   return matrix.get(0).some((n: any) => !!n);
 };
 /* 将状态记录到local storage */
-export const subscribeRecord = (store) => {
+export const subscribeRecord = (store: ToolkitStore<StoreReducer, AnyAction, [ThunkMiddleware<StoreReducer, AnyAction>]>) => {
+  console.log("%c store", "font-size:13px; background:pink; color:#bf2c9f;", store);
   store.subscribe(() => {
-    let data = store.getState().toJS();
+    let data = store.getState();
     if (data.lock) {
       // 状态为锁定时不记录
       return;
     }
-    data = JSON.stringify(data);
-    data = encodeURIComponent(data);
-    data = btoa(data);
-    localStorage.setItem(StorageKey, data);
+    let dataJson = JSON.stringify(data);
+    dataJson = encodeURIComponent(dataJson);
+    dataJson = btoa(dataJson);
+    localStorage.setItem(StorageKey, dataJson);
   });
 };
 /* 判断是否为移动端 */

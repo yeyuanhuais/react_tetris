@@ -1,10 +1,11 @@
-const eventName = {};
+import { Timeout } from "ahooks/lib/useRequest/src/types";
+const eventName: { [key: string]: Timeout | undefined } = {};
 
-const down = (o) => {
+const down = (o: { callback: (arg0: { (): void; (): void }) => void; key: string | number; once: boolean; begin: number; interval: number }) => {
   const keys = Object.keys(eventName);
   keys.forEach((i) => {
     clearTimeout(eventName[i]);
-    eventName[i] = null;
+    eventName[i] = undefined;
   });
   if (!o.callback) {
     return;
@@ -20,16 +21,16 @@ const down = (o) => {
   const interval = o.interval || 50;
   const loop = () => {
     eventName[o.key] = setTimeout(() => {
-      begin = null;
+      begin = 0;
       loop();
       o.callback(clear);
     }, begin || interval);
   };
   loop();
 };
-const up = (o) => {
+const up = (o: { key: string | number; callback: () => void }) => {
   clearTimeout(eventName[o.key]);
-  eventName[o.key] = null;
+  eventName[o.key] = undefined;
   if (!o.callback) {
     return;
   }
@@ -39,7 +40,7 @@ const clearAll = () => {
   const keys = Object.keys(eventName);
   keys.forEach((i) => {
     clearTimeout(eventName[i]);
-    eventName[i] = null;
+    eventName[i] = undefined;
   });
 };
 export default {
