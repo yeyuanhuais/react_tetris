@@ -2,8 +2,8 @@ import React from 'react';
 import cn from 'classnames';
 import propTypes from 'prop-types';
 
-import style from './index.less';
-import { i18nData, lan } from '../../unit/const';
+import style from './index.module.less';
+import { i18nData, lan } from '@/unit/const';
 
 export default class Logo extends React.Component {
   constructor() {

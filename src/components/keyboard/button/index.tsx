@@ -1,9 +1,9 @@
-import React from 'react';
 import cn from 'classnames';
 import propTypes from 'prop-types';
+import React from 'react';
 
-import style from './index.less';
-import { transform } from '../../../unit/const';
+import { transform } from '@/unit/const';
+import style from './index.module.less';
 
 export default class Button extends React.Component {
   shouldComponentUpdate(nextProps) {

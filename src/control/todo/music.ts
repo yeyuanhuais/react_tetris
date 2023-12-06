@@ -1,4 +1,4 @@
-import event from "../../unit/event";
+import event from "@/unit/event";
 import { useAppDispatch, useAppSelector } from "@/hook/storeHook";
 import { StoreReducer } from "@/store";
 import { changeMusic } from "@/store/music";

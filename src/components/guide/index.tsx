@@ -1,8 +1,8 @@
 import React from 'react';
 import QRCode from 'qrcode';
-import style from './index.less';
-import { transform, i18nData, lan } from '../../unit/const';
-import { isMobile } from '../../unit';
+import style from './index.module.less';
+import { transform, i18nData, lan } from '@/unit/const';
+import { isMobile } from '@/unit';
 
 
 export default class Guide extends React.Component {

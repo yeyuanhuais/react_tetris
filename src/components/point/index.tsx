@@ -2,7 +2,7 @@ import React from 'react';
 import propTypes from 'prop-types';
 
 import Number from '../number';
-import { i18nData, lan } from '../../unit/const';
+import { i18nData, lan } from '@/unit/const';
 
 const DF = i18nData.point[lan];
 const ZDF = i18nData.highestScore[lan];

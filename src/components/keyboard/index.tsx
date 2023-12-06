@@ -1,12 +1,12 @@
-import React from 'react';
-import Immutable from 'immutable';
+import { is } from 'immutable';
 import propTypes from 'prop-types';
+import React from 'react';
 
-import style from './index.less';
+import todo from '@/control/todo';
+import store from '@/store';
+import { i18nData, lan } from '@/unit/const';
 import Button from './button';
-import store from '../../store';
-import todo from '../../control/todo';
-import { i18nData, lan } from '../../unit/const';
+import style from './index.module.less';
 
 export default class Keyboard extends React.Component {
   componentDidMount() {
@@ -71,7 +71,7 @@ export default class Keyboard extends React.Component {
     });
   }
   shouldComponentUpdate({ keyboard, filling }) {
-    return !Immutable.is(keyboard, this.props.keyboard) || filling !== this.props.filling;
+    return !is(keyboard, this.props.keyboard) || filling !== this.props.filling;
   }
   render() {
     const keyboard = this.props.keyboard;
