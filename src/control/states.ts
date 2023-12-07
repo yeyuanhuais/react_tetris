@@ -1,7 +1,6 @@
-import { useAppDispatch, useAppSelector } from "@/hook/storeHook";
-import { StoreReducer } from "@/store";
+import store from "@/store";
 import { changeClearLines } from "@/store/clearLines";
-import cur, { changeCur } from "@/store/cur";
+import { changeCur } from "@/store/cur";
 import { changeFocus } from "@/store/focus";
 import { changeLock } from "@/store/lock";
 import { changeMatrix } from "@/store/matrix";
@@ -14,7 +13,6 @@ import { changeSpeedRun } from "@/store/speedRun";
 import { isClear, isOver, want } from "@/unit";
 import { blankLine, blankMatrix, clearPoints, eachLines, speeds } from "@/unit/const";
 import { music } from "@/unit/music";
-import { time } from "console";
 import { List } from "immutable";
 /* 生成getStartMatrix */
 const getStartMatrix = (startLines: number) => {
@@ -49,7 +47,7 @@ const getStartMatrix = (startLines: number) => {
   return startMatrix;
 };
 
-const dispatch = useAppDispatch();
+const dispatch = store.dispatch;
 const {
   speedStart: speedStartState,
   startLines: startLinesState,
@@ -62,14 +60,14 @@ const {
   pause: pauseState,
   clearLines: clearLinesState,
   max: maxState,
-} = useAppSelector((state: StoreReducer) => state);
+} = store.getState();
 
 export const states = {
   //自动下落setTimeout变量
   fallInterval: null,
   // 游戏开始
   start: () => {
-    if (music.start) {
+    if (music) {
       music.start();
     }
     states.dispatchPoints(0);
@@ -81,8 +79,8 @@ export const states = {
     states.auto();
   },
   /* 自动下落 */
-  auto: (timeout: number) => {
-    const out = timeout < 0 ? 0 : timeout;
+  auto: (timeout?: number) => {
+    const out = !timeout || timeout < 0 ? 0 : timeout;
     let state = curState;
     const fall = () => {
       const next = curState.fall();
@@ -125,8 +123,8 @@ export const states = {
       return;
     }
     if (isOver(matrix)) {
-      if (music.gameover) {
-        music.gameover();
+      if (music.gameOver) {
+        music.gameOver();
       }
       states.overStart();
       return;

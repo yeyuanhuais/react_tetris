@@ -34,16 +34,6 @@ body {
 }
 
 .bg {
-  background: url("//img.alicdn.com/tps/TB1qq7kNXXXXXacXFXXXXXXXXXX-400-186.png") no-repeat;
+  background: url("./assets/image/icon.png") no-repeat;
   overflow: hidden;
-}
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  -khtml-user-select: none;
-  user-select: none;
 }

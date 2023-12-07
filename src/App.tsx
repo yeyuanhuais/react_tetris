@@ -9,122 +9,146 @@ import Next from "@/components/next";
 import Number from "@/components/number";
 import Pause from "@/components/pause";
 import Point from "@/components/point";
-import { states } from "@/control/states";
-import { useAppDispatch, useAppSelector } from "@/hook/storeHook";
-import { useResize } from "@/hook/useResize";
-import { StoreReducer } from "@/store";
-import { changeFocus } from "@/store/focus";
-import { isFocus, visibilityChangeEvent } from "@/unit";
-import { i18nData, lan, lastRecord, speeds } from "@/unit/const";
 import classnames from "classnames";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { connect } from "react-redux";
+
+import { states } from "@/control/states";
+import { isFocus, visibilityChangeEvent } from "@/unit/";
+import { TransForm, i18nData, lan, lastRecord, speeds, transform } from "@/unit/const";
+import { StoreReducer } from "./store";
+
 interface CssProps {
-  transform?: string;
   paddingTop?: number;
   paddingBottom?: number;
   marginTop?: number;
+  transform?: string;
+  webkitTransform?: string;
+  msTransform?: string;
+  mozTransform?: string;
+  oTransform?: string;
 }
-function App() {
-  const [filling, setFilling] = useState(0);
-  const [cssStyle, setCssStyle] = useState({});
-  const {
-    speedStart: speedStartState,
-    startLines: startLinesState,
-    next: nextState,
-    cur: curState,
-    matrix: matrixState,
-    speedRun: speedRunState,
-    points: pointsState,
-    reset: resetState,
-    pause: pauseState,
-    clearLines: clearLinesState,
-    max: maxState,
-    drop: dropState,
-    keyboard: keyboardState,
-    music: musicState,
-  } = useAppSelector((state: StoreReducer) => state);
-  const dispatch = useAppDispatch();
-  const [width, height] = useResize();
-  const handleVisibilityChange = () => {
-    dispatch(changeFocus(isFocus()));
-  };
-  useEffect(() => {
+type Props = Readonly<StoreReducer>;
+type State = {
+  w: number;
+  h: number;
+};
+class App extends React.Component<Props, State> {
+  constructor(props: Readonly<StoreReducer>) {
+    super(props);
+    this.state = {
+      w: document.documentElement.clientWidth,
+      h: document.documentElement.clientHeight,
+    };
+  }
+  componentWillMount() {
+    window.addEventListener("resize", this.resize.bind(this), true);
+  }
+  componentDidMount() {
     if (visibilityChangeEvent) {
-      document.addEventListener(visibilityChangeEvent, handleVisibilityChange, false);
+      // 将页面的焦点变换写入store
+      document.addEventListener(
+        visibilityChangeEvent,
+        () => {
+          states.focus(isFocus());
+        },
+        false,
+      );
     }
+
     if (lastRecord) {
       // 读取记录
       if (lastRecord.cur && !lastRecord.pause) {
         // 拿到上一次游戏的状态, 如果在游戏中且没有暂停, 游戏继续
-        const speedRun = speedRunState;
-        // 继续时, 给予当前下落速度一半的停留时间
-        let timeout = speeds[speedRun - 1] / 2;
+        const speedRun = this.props.speedRun;
+        let timeout = speeds[speedRun - 1] / 2; // 继续时, 给予当前下落速度一半的停留时间
         // 停留时间不小于最快速的速度
         timeout = speedRun < speeds[speeds.length - 1] ? speeds[speeds.length - 1] : speedRun;
         states.auto(timeout);
       }
       if (!lastRecord.cur) {
         states.overStart();
-      } else {
-        states.overEnd();
       }
-    }
-    return document.removeEventListener(visibilityChangeEvent as keyof DocumentEventMap, handleVisibilityChange, false);
-  }, []);
-  useEffect(() => {
-    const w = width;
-    const h = height;
-    const ratio = w / h;
-    let scale;
-    let css: CssProps = {};
-    if (ratio < 1.5) {
-      scale = h / 960;
     } else {
-      scale = w / 640;
-      setFilling((h - 960 * scale) / scale / 3);
+      states.overStart();
     }
-    css.transform = `scale(${scale})`;
-    setCssStyle(css);
-  }, [width, height]);
-  useEffect(() => {
-    let css: CssProps = {};
-    css = {
-      paddingTop: Math.floor(filling) + 42,
-      paddingBottom: Math.floor(filling),
-      marginTop: Math.floor(-480 - filling * 1.5),
-    };
-    setCssStyle(css);
-  }, [filling]);
-  return (
-    <div className={style.app} style={cssStyle}>
-      <div className={classnames({ [style.react]: true, [style.drop]: dropState })}>
-        <Decorate />
-        <div className={style.screen}>
-          <div className={style.panel}>
-            <Matrix matrix={matrixState} cur={curState} reset={resetState} />
-            <Logo cur={!!curState} reset={resetState} />
-            <div className={style.state}>
-              <Point cur={!!curState} point={pointsState} max={maxState} />
-              <p>{curState ? i18nData.cleans[lan] : i18nData.startLine[lan]}</p>
-              <Number number={curState ? clearLinesState : startLinesState} />
-              <p>{i18nData.level[lan]}</p>
-              <Number number={curState ? speedRunState : speedStartState} length={1} />
-              <p>{i18nData.next[lan]}</p>
-              <Next data={nextState} />
-              <div className={style.bottom}>
-                <Music data={musicState} />
-                <Pause data={pauseState} />
-                <Number time />
+  }
+  resize() {
+    this.setState({
+      w: document.documentElement.clientWidth,
+      h: document.documentElement.clientHeight,
+    });
+  }
+  render() {
+    let filling = 0;
+    const size = (() => {
+      const w = this.state.w;
+      const h = this.state.h;
+      const ratio = h / w;
+      let scale;
+      let css: CssProps | TransForm = {};
+      if (ratio < 1.5) {
+        scale = h / 960;
+      } else {
+        scale = w / 640;
+        filling = (h - 960 * scale) / scale / 3;
+        css = {
+          paddingTop: Math.floor(filling) + 42,
+          paddingBottom: Math.floor(filling),
+          marginTop: Math.floor(-480 - filling * 1.5),
+        };
+      }
+      css[transform] = `scale(${scale})`;
+      return css;
+    })();
+
+    return (
+      <div className={style.app} style={size}>
+        <div className={classnames({ [style.rect]: true, [style.drop]: this.props.drop })}>
+          <Decorate />
+          <div className={style.screen}>
+            <div className={style.panel}>
+              <Matrix matrix={this.props.matrix} cur={this.props.cur} reset={this.props.reset} />
+              <Logo cur={!!this.props.cur} reset={this.props.reset} />
+              <div className={style.state}>
+                <Point cur={!!this.props.cur} point={this.props.points} max={this.props.max} />
+                <p>{this.props.cur ? i18nData.cleans[lan] : i18nData.startLine[lan]}</p>
+                <Number number={this.props.cur ? this.props.clearLines : this.props.startLines} />
+                <p>{i18nData.level[lan]}</p>
+                <Number number={this.props.cur ? this.props.speedRun : this.props.speedStart} length={1} />
+                <p>{i18nData.next[lan]}</p>
+                <Next data={this.props.next} />
+                <div className={style.bottom}>
+                  <Music data={this.props.music} />
+                  <Pause data={this.props.pause} />
+                  <Number time />
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <Keyboard filling={filling} keyboard={this.props.keyboard} />
+        <Guide />
       </div>
-
-      <Keyboard filling={filling} keyboard={keyboardState} />
-      <Guide />
-    </div>
-  );
+    );
+  }
 }
 
-export default React.memo(App);
+const mapStateToProps = (state: StoreReducer) => ({
+  pause: state["pause"],
+  music: state["music"],
+  matrix: state["matrix"],
+  next: state["next"],
+  cur: state["cur"],
+  speedStart: state["speedStart"],
+  speedRun: state["speedRun"],
+  startLines: state["startLines"],
+  clearLines: state["clearLines"],
+  points: state["points"],
+  max: state["max"],
+  reset: state["reset"],
+  drop: state["drop"],
+  keyboard: state["keyboard"],
+});
+
+export default connect(mapStateToProps)(App);

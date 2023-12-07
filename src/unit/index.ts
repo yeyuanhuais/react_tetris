@@ -81,7 +81,6 @@ export const isOver = (matrix: { get: (arg0: number) => any[] }) => {
 };
 /* 将状态记录到local storage */
 export const subscribeRecord = (store: ToolkitStore<StoreReducer, AnyAction, [ThunkMiddleware<StoreReducer, AnyAction>]>) => {
-  console.log("%c store", "font-size:13px; background:pink; color:#bf2c9f;", store);
   store.subscribe(() => {
     let data = store.getState();
     if (data.lock) {

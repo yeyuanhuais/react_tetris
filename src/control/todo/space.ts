@@ -1,39 +1,26 @@
-import { want } from '@/unit';
-import event from '@/unit/event';
-import {states} from '../states';
-import { music } from '@/unit/music';
-import { useAppDispatch, useAppSelector } from '@/hook/storeHook';
-import { StoreReducer } from '@/store';
-import { changeKeyDrop } from '@/store/keyboard';
-import { changeDrop } from '@/store/drop';
-import { changeCur } from '@/store/cur';
+import store from "@/store";
+import { changeCur } from "@/store/cur";
+import { changeDrop } from "@/store/drop";
+import { changeKeyDrop } from "@/store/keyboard";
+import { want } from "@/unit";
+import event from "@/unit/event";
+import { music } from "@/unit/music";
+import { states } from "../states";
 
-const dispatch = useAppDispatch();
-const {
-  speedStart: speedStartState,
-  startLines: startLinesState,
-  next: nextState,
-  cur: curState,
-  matrix: matrixState,
-  speedRun: speedRunState,
-  points: pointsState,
-  reset: resetState,
-  pause: pauseState,
-  clearLines: clearLinesState,
-  max: maxState,
-  lock: lockState,
-} = useAppSelector((state: StoreReducer) => state);
-const down = (store) => {
+const down = () => {
+  const dispatch = store.dispatch;
+  const { cur: curState, matrix: matrixState, pause: pauseState, lock: lockState } = store.getState();
   dispatch(changeKeyDrop(true));
   event.down({
-    key: 'space',
+    key: "space",
     once: true,
     callback: () => {
       if (lockState) {
         return;
       }
       const cur = curState;
-      if (cur !== null) { // 置底
+      if (cur !== null) {
+        // 置底
         if (pauseState) {
           states.pause(false);
           return;
@@ -52,15 +39,16 @@ const down = (store) => {
         dispatch(changeCur(bottom));
         const shape = bottom.shape;
         const xy = bottom.xy;
-        shape.forEach((m, k1) => (
+        shape.forEach((m, k1) =>
           m.forEach((n, k2) => {
-            if (n && xy[0] + k1 >= 0) { // 竖坐标可以为负
+            if (n && xy[0] + k1 >= 0) {
+              // 竖坐标可以为负
               let line = matrix.get(xy[0] + k1);
               line = line.set(xy[1] + k2, 1);
               matrix = matrix.set(xy[0] + k1, line);
             }
-          })
-        ));
+          }),
+        );
         dispatch(changeDrop(true));
         setTimeout(() => {
           dispatch(changeDrop(false));
@@ -73,10 +61,10 @@ const down = (store) => {
   });
 };
 
-const up = (store) => {
-  dispatch(changeKeyDrop(false));
+const up = () => {
+  store.dispatch(changeKeyDrop(false));
   event.up({
-    key: 'space',
+    key: "space",
   });
 };
 

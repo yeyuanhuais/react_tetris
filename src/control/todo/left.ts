@@ -1,5 +1,4 @@
-import { useAppDispatch, useAppSelector } from "@/hook/storeHook";
-import { StoreReducer } from "@/store";
+import store from "@/store";
 import { changeCur } from "@/store/cur";
 import { changeKeyLeft } from "@/store/keyboard";
 import { changeSpeedStart } from "@/store/speedStart";
@@ -8,16 +7,16 @@ import event from "@/unit/event";
 import { music } from "@/unit/music";
 import { states } from "../states";
 
-const dispatch = useAppDispatch();
-const {
-  speedStart: speedStartState,
-  cur: curState,
-  matrix: matrixState,
-  speedRun: speedRunState,
-  pause: pauseState,
-  lock: lockState,
-} = useAppSelector((state: StoreReducer) => state);
 const down = () => {
+  const dispatch = store.dispatch;
+  const {
+    speedStart: speedStartState,
+    cur: curState,
+    matrix: matrixState,
+    speedRun: speedRunState,
+    pause: pauseState,
+    lock: lockState,
+  } = store.getState();
   dispatch(changeKeyLeft(true));
   event.down({
     key: "left",
@@ -58,7 +57,7 @@ const down = () => {
   });
 };
 const up = () => {
-  dispatch(changeKeyLeft(false));
+  store.dispatch(changeKeyLeft(false));
   event.up({
     key: "left",
   });

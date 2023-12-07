@@ -1,5 +1,4 @@
-import { useAppDispatch, useAppSelector } from "@/hook/storeHook";
-import { StoreReducer } from "@/store";
+import store from "@/store";
 import { changeCur } from "@/store/cur";
 import { changeKeyRotate } from "@/store/keyboard";
 import { changeStartLines } from "@/store/startLines";
@@ -8,15 +7,9 @@ import event from "@/unit/event";
 import { music } from "@/unit/music";
 import { states } from "../states";
 
-const dispatch = useAppDispatch();
-const {
-  startLines: startLinesState,
-  cur: curState,
-  matrix: matrixState,
-  pause: pauseState,
-  lock: lockState,
-} = useAppSelector((state: StoreReducer) => state);
 const down = () => {
+  const dispatch = store.dispatch;
+  const { startLines: startLinesState, cur: curState, matrix: matrixState, pause: pauseState, lock: lockState } = store.getState();
   dispatch(changeKeyRotate(true));
   if (curState !== null) {
     event.down({
@@ -67,7 +60,7 @@ const down = () => {
 };
 
 const up = () => {
-  dispatch(changeKeyRotate(false));
+  store.dispatch(changeKeyRotate(false));
   event.up({
     key: "rotate",
   });

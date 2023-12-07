@@ -1,16 +1,11 @@
-import event from "@/unit/event";
-import {states} from "../states";
-import { useAppDispatch, useAppSelector } from "@/hook/storeHook";
-import { StoreReducer } from "@/store";
+import store from "@/store";
 import { changePause } from "@/store/pause";
+import event from "@/unit/event";
+import { states } from "../states";
 
-const dispatch = useAppDispatch();
-const {
-  cur: curState,
-  pause: pauseState,
-  lock: lockState,
-} = useAppSelector((state: StoreReducer) => state);
 const down = () => {
+  const dispatch = store.dispatch;
+  const { cur: curState, pause: pauseState, lock: lockState } = store.getState();
   dispatch(changePause(true));
   event.down({
     key: "pause",
@@ -33,7 +28,7 @@ const down = () => {
 };
 
 const up = () => {
-  dispatch(changePause(false));
+  store.dispatch(changePause(false));
   event.up({
     key: "pause",
   });

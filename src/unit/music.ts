@@ -1,49 +1,25 @@
-import { useAppSelector } from "@/hook/storeHook";
-import { StoreReducer } from "@/store";
+import store from "@/store";
+import { changeMusic } from "@/store/music";
 
 interface MusicProps {
   clear: () => void;
   fall: () => void;
-  gameover: () => void;
+  gameOver: () => void;
   rotate: () => void;
   move: () => void;
   killStart: () => void;
   start: () => void;
 }
-export const hasWebAudioAPI = {
-  // 使用 Web Audio API
-  data: !!AudioContext && location.protocol.indexOf("http") !== -1,
-};
+// 使用 Web Audio API
+export let hasWebAudioAPI = !!AudioContext && location.protocol.indexOf("http") !== -1;
 
-export const music: MusicProps = {
-  killStart: function (): void {
-    throw new Error("Function not implemented.");
-  },
-  start: function (): void {
-    throw new Error("Function not implemented.");
-  },
-  clear: function (): void {
-    throw new Error("Function not implemented.");
-  },
-  fall: function (): void {
-    throw new Error("Function not implemented.");
-  },
-  gameover: function (): void {
-    throw new Error("Function not implemented.");
-  },
-  rotate: function (): void {
-    throw new Error("Function not implemented.");
-  },
-  move: function (): void {
-    throw new Error("Function not implemented.");
-  },
-};
-(() => {
-  const musicState = useAppSelector((state: StoreReducer) => state.music.value);
-  if (!hasWebAudioAPI.data) {
+export const music = (): MusicProps | undefined => {
+  let data: MusicProps;
+  const { music: musicState } = store.getState();
+  if (!hasWebAudioAPI) {
     return;
   }
-  const url = "./music.mp3";
+  const url = "./public/music/music.mp3";
   const context = new AudioContext();
   const req = new XMLHttpRequest();
   req.open("GET", url, true);
@@ -60,48 +36,48 @@ export const music: MusicProps = {
           source.connect(context.destination);
           return source;
         };
-        music.killStart = () => {
+        data.killStart = () => {
           // 游戏开始的音乐只播放一次
-          music.start = () => {};
+          data.start = () => {};
         };
         // 游戏开始
-        music.start = () => {
-          music.killStart();
+        data.start = () => {
+          data.killStart();
           if (!musicState) {
             return;
           }
           getSource().start(0, 3.7202, 3.6224);
         };
         // 消除方块
-        music.clear = () => {
+        data.clear = () => {
           if (!musicState) {
             return;
           }
           getSource().start(0, 0, 0.7675);
         };
         // 立即下落
-        music.fall = () => {
+        data.fall = () => {
           if (!musicState) {
             return;
           }
           getSource().start(0, 1.2558, 0.3546);
         };
         // 游戏结束
-        music.gameover = () => {
+        data.gameOver = () => {
           if (!musicState) {
             return;
           }
           getSource().start(0, 8.1276, 1.1437);
         };
         // 旋转
-        music.rotate = () => {
+        data.rotate = () => {
           if (!musicState) {
             return;
           }
           getSource().start(0, 2.2471, 0.0807);
         };
         // 移动
-        music.move = () => {
+        data.move = () => {
           if (!musicState) {
             return;
           }
@@ -111,10 +87,15 @@ export const music: MusicProps = {
       (error) => {
         if (window.console) {
           window.console.error(`音频：${url} 读取错误`, error);
-          hasWebAudioAPI.data = false;
+          hasWebAudioAPI = false;
         }
-      }
+      },
     );
   };
   req.send();
+};
+(() => {
+  if (!hasWebAudioAPI) {
+    store.dispatch(changeMusic(false));
+  }
 })();

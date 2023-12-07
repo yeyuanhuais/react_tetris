@@ -98,8 +98,9 @@ export const lan = ((): lanType => {
 export const i18nData: { [key: string]: { [key: string]: string } } = i18n.data;
 document.title = i18n.data.title[lan];
 
+export type TransForm = "transform" | "webkitTransform" | "msTransform" | "mozTransform" | "oTransform";
 export const transform = (function () {
-  const trans = ['transform', 'webkitTransform', 'msTransform', 'mozTransform', 'oTransform'];
+  const trans = ["transform", "webkitTransform", "msTransform", "mozTransform", "oTransform"];
   const body = document.body;
-  return trans.filter((e) => body.style[e] !== undefined)[0];
-}());
+  return trans.filter((e: any) => body.style[e] !== undefined)[0] as TransForm;
+})();

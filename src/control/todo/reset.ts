@@ -1,25 +1,11 @@
-import { useAppDispatch, useAppSelector } from "@/hook/storeHook";
-import { StoreReducer } from "@/store";
+import store from "@/store";
 import { changeReset } from "@/store/reset";
 import event from "@/unit/event";
 import { states } from "../states";
 
-const dispatch = useAppDispatch();
-const {
-  speedStart: speedStartState,
-  startLines: startLinesState,
-  next: nextState,
-  cur: curState,
-  matrix: matrixState,
-  speedRun: speedRunState,
-  points: pointsState,
-  reset: resetState,
-  pause: pauseState,
-  clearLines: clearLinesState,
-  max: maxState,
-  lock: lockState,
-} = useAppSelector((state: StoreReducer) => state);
-const down = (store) => {
+const down = () => {
+  const dispatch = store.dispatch;
+  const { cur: curState, lock: lockState } = store.getState();
   dispatch(changeReset(true));
   if (lockState) {
     return;
@@ -46,8 +32,8 @@ const down = (store) => {
   }
 };
 
-const up = (store) => {
-  dispatch(changeReset(false));
+const up = () => {
+  store.dispatch(changeReset(false));
   event.up({
     key: "reset",
   });

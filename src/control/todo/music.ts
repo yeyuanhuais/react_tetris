@@ -1,16 +1,12 @@
-import event from "@/unit/event";
-import { useAppDispatch, useAppSelector } from "@/hook/storeHook";
-import { StoreReducer } from "@/store";
+import store from "@/store";
 import { changeMusic } from "@/store/music";
+import event from "@/unit/event";
 
-const dispatch = useAppDispatch();
-const {
-  music: musicState,
-  lock: lockState,
-} = useAppSelector((state: StoreReducer) => state);
-const down = (store) => {
+const down = () => {
+  const dispatch = store.dispatch;
+  const { music: musicState, lock: lockState } = store.getState();
   dispatch(changeMusic(true));
-  if (store.getState().get("lock")) {
+  if (lockState) {
     return;
   }
   event.down({
@@ -26,7 +22,7 @@ const down = (store) => {
 };
 
 const up = () => {
-  dispatch(changeMusic(false));
+  store.dispatch(changeMusic(false));
   event.up({
     key: "music",
   });
