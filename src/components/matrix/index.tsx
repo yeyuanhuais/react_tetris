@@ -1,18 +1,25 @@
+import { states } from "@/control/states";
+import { CurState } from "@/store/cur";
+import { isClear } from "@/unit";
+import { blankLine, CreateOptions, fillLine } from "@/unit/const";
 import classnames from "classnames";
 import { is, List } from "immutable";
-import propTypes from "prop-types";
 import React from "react";
-
-import { states } from "@/control/states";
-import { isClear } from "@/unit";
-import { blankLine, fillLine } from "@/unit/const";
 import style from "./index.module.less";
 
 const t = setTimeout;
 
-export default class Matrix extends React.Component {
-  constructor() {
-    super();
+type Constructor = { matrix: List<List<number>>; cur: CurState; reset: boolean };
+type Props = Readonly<CreateOptions<Constructor, "cur">>;
+type State = {
+  clearLines: false | number[];
+  animateColor: number;
+  isOver: boolean;
+  overState: List<List<number>> | null;
+};
+export default class Matrix extends React.Component<Required<Props>, State> {
+  constructor(props: Constructor) {
+    super(props);
     this.state = {
       clearLines: false,
       animateColor: 2,
@@ -20,7 +27,7 @@ export default class Matrix extends React.Component {
       overState: null,
     };
   }
-  componentWillReceiveProps(nextProps = {}) {
+  componentWillReceiveProps(nextProps: Constructor) {
     const clears = isClear(nextProps.matrix);
     const overs = nextProps.reset;
     this.setState({
@@ -28,24 +35,22 @@ export default class Matrix extends React.Component {
       isOver: overs,
     });
     if (clears && !this.state.clearLines) {
-      this.clearAnimate(clears);
+      this.clearAnimate();
     }
     if (!clears && overs && !this.state.isOver) {
       this.over(nextProps);
     }
   }
-  shouldComponentUpdate(nextProps = {}) {
+  shouldComponentUpdate(nextProps: Constructor) {
     // 使用Immutable 比较两个List 是否相等
     const props = this.props;
-    return (
-      !(
-        is(nextProps.matrix, props.matrix) &&
-        is(nextProps.cur && nextProps.cur.shape, props.cur && props.cur.shape) &&
-        is(nextProps.cur && nextProps.cur.xy, props.cur && props.cur.xy)
-      ) ||
+    return (!(
+      is(nextProps.matrix, props.matrix) &&
+      is(nextProps.cur && nextProps.cur.shape, props.cur && props.cur.shape) &&
+      is(nextProps.cur && nextProps.cur.xy, props.cur && props.cur.xy)
+    ) ||
       this.state.clearLines ||
-      this.state.isOver
-    );
+      this.state.isOver) as boolean;
   }
   getResult(props = this.props) {
     const cur = props.cur;
@@ -74,8 +79,8 @@ export default class Matrix extends React.Component {
         );
       });
     } else if (shape) {
-      shape.forEach((m, k1) =>
-        m.forEach((n, k2) => {
+      shape.forEach((m: List<number>, k1: number) =>
+        m.forEach((n: number, k2: number) => {
           if (n && xy.get(0) + k1 >= 0) {
             // 竖坐标可以为负
             let line = matrix.get(xy.get(0) + k1);
@@ -95,7 +100,7 @@ export default class Matrix extends React.Component {
     return matrix;
   }
   clearAnimate() {
-    const anima = (callback) => {
+    const anima = (callback: () => void) => {
       t(() => {
         this.setState({
           animateColor: 0,
@@ -120,13 +125,13 @@ export default class Matrix extends React.Component {
       });
     });
   }
-  over(nextProps) {
+  over(nextProps: Constructor) {
     let overState = this.getResult(nextProps);
     this.setState({
       overState,
     });
 
-    const exLine = (index) => {
+    const exLine = (index: number) => {
       if (index <= 19) {
         overState = overState.set(19 - index, List(fillLine));
       } else if (index >= 20 && index <= 39) {
@@ -153,26 +158,21 @@ export default class Matrix extends React.Component {
     }
     return (
       <div className={style.matrix}>
-        {matrix.map((p, k1) => (
-          <p key={k1}>
-            {p.map((e, k2) => (
-              <b
-                className={classnames({
-                  c: e === 1,
-                  d: e === 2,
-                })}
-                key={k2}
-              />
-            ))}
-          </p>
-        ))}
+        {matrix &&
+          matrix.map((p, k1) => (
+            <p key={k1}>
+              {p.map((e, k2) => (
+                <b
+                  className={classnames({
+                    c: e === 1,
+                    d: e === 2,
+                  })}
+                  key={k2}
+                />
+              ))}
+            </p>
+          ))}
       </div>
     );
   }
 }
-
-Matrix.propTypes = {
-  matrix: propTypes.object.isRequired,
-  cur: propTypes.object,
-  reset: propTypes.bool.isRequired,
-};

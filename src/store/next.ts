@@ -1,8 +1,9 @@
 import { getNextType } from "@/unit";
 import { blockType, lastRecord } from "@/unit/const";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { CurType } from "./cur";
 // 定义 slice state 的类型
-export type NextState =string
+export type NextState =CurType
 
 // 使用该类型定义初始 state
 const initialState: NextState = lastRecord && blockType.indexOf(lastRecord.next) !== -1 ? lastRecord.next : getNextType();

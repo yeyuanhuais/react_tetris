@@ -1,4 +1,5 @@
 import { StoreReducer } from "@/store";
+import { CurType } from "@/store/cur";
 import { List } from "immutable";
 import i18n from "../../i18n.json";
 
@@ -7,50 +8,24 @@ export const clearPoints = [100, 300, 700, 1500];
 /* 最高分 */
 export const maxPoint = 999999;
 export const blankLine = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-export const blockShape = {
-  I: [[1, 1, 1, 1]],
-  L: [
-    [0, 0, 1],
-    [1, 1, 1],
-  ],
-  J: [
-    [1, 0, 0],
-    [1, 1, 1],
-  ],
-  Z: [
-    [1, 1, 0],
-    [0, 1, 1],
-  ],
-  S: [
-    [0, 1, 1],
-    [1, 1, 0],
-  ],
-  O: [
-    [1, 1],
-    [1, 1],
-  ],
-  T: [
-    [0, 1, 0],
-    [1, 1, 1],
-  ],
+export const blockShape: { [key in CurType]: List<List<number>> } = {
+  I: List([List([1, 1, 1, 1])]),
+  L: List([List([0, 0, 1]), List([1, 1, 1])]),
+  J: List([List([1, 0, 0]), List([1, 1, 1])]),
+  Z: List([List([1, 1, 0]), List([0, 1, 1])]),
+  S: List([List([0, 1, 1]), List([1, 1, 0])]),
+  O: List([List([1, 1]), List([1, 1])]),
+  T: List([List([0, 1, 0]), List([1, 1, 1])]),
 };
-export const blockType = Object.keys(blockShape);
-export const origin = {
-  I: [
-    [-1, 1],
-    [1, -1],
-  ],
-  L: [[0, 0]],
-  J: [[0, 0]],
-  Z: [[0, 0]],
-  S: [[0, 0]],
-  O: [[0, 0]],
-  T: [
-    [0, 0],
-    [1, 0],
-    [-1, 1],
-    [0, -1],
-  ],
+export const blockType = Object.keys(blockShape) as CurType[];
+export const origin: { [key in CurType]: List<List<number>> } = {
+  I: List([List([-1, 1]), List([1, -1])]),
+  L: List([List([0, 0])]),
+  J: List([List([0, 0])]),
+  Z: List([List([0, 0])]),
+  S: List([List([0, 0])]),
+  O: List([List([0, 0])]),
+  T: List([List([0, 0]), List([1, 0]), List([-1, 1]), List([0, -1])]),
 };
 
 export const speeds = [800, 650, 500, 370, 250, 160];
@@ -104,3 +79,12 @@ export const transform = (function () {
   const body = document.body;
   return trans.filter((e: any) => body.style[e] !== undefined)[0] as TransForm;
 })();
+
+export type Filter<T> = {
+  [K in keyof T as undefined extends T[K] ? K : never]: T[K];
+};
+/**
+ * @description 将必选转换成可选
+ * type DocumentOption = CreateOptions<Document, 'status'|'author'|'date'|'readCount'>;
+ */
+export type CreateOptions<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;

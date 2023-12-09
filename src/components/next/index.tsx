@@ -1,10 +1,11 @@
-import React from 'react';
-import propTypes from 'prop-types';
+import { CurType } from "@/store/cur";
+import { blockShape } from "@/unit/const";
+import { List } from "immutable";
+import React from "react";
+import style from "./index.module.less";
 
-import style from './index.module.less';
-import { blockShape } from '@/unit/const';
-
-const xy = { // 方块在下一个中的坐标
+const xy = {
+  // 方块在下一个中的坐标
   I: [1, 0],
   L: [0, 0],
   J: [0, 0],
@@ -14,34 +15,36 @@ const xy = { // 方块在下一个中的坐标
   T: [0, 0],
 };
 
-const empty = [
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
+const empty = [List([0, 0, 0, 0]), List([0, 0, 0, 0])];
 
-export default class Next extends React.Component {
-  constructor() {
-    super();
+type Constructor = { data: CurType };
+type Props = Readonly<Constructor>;
+type State = {
+  block: List<List<number>>;
+};
+export default class Next extends React.Component<Required<Props>, State> {
+  constructor(props: Constructor) {
+    super(props);
     this.state = {
-      block: empty,
+      block: List(empty),
     };
   }
   componentWillMount() {
     this.build(this.props.data);
   }
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Constructor) {
     this.build(nextProps.data);
   }
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps: Constructor) {
     return nextProps.data !== this.props.data;
   }
-  build(type) {
+  build(type: CurType) {
     const shape = blockShape[type];
-    const block = empty.map(e => ([...e]));
+    const block: List<List<number>> = List(empty.map((e) => List([...e])));
     shape.forEach((m, k1) => {
       m.forEach((n, k2) => {
         if (n) {
-          block[k1 + xy[type][0]][k2 + xy[type][1]] = 1;
+          block.updateIn([k1 + xy[type][0], k2 + xy[type][1]], () => 1);
         }
       });
     });
@@ -50,22 +53,14 @@ export default class Next extends React.Component {
   render() {
     return (
       <div className={style.next}>
-        {
-          this.state.block.map((arr, k1) => (
-            <div key={k1}>
-              {
-                arr.map((e, k2) => (
-                  <b className={e ? 'c' : ''} key={k2} />
-                ))
-              }
-            </div>
-          ))
-        }
+        {this.state.block.map((arr, k1) => (
+          <div key={k1}>
+            {arr.map((e, k2) => (
+              <b className={e ? "c" : ""} key={k2} />
+            ))}
+          </div>
+        ))}
       </div>
     );
   }
 }
-
-Next.propTypes = {
-  data: propTypes.string,
-};

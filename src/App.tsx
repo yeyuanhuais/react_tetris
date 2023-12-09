@@ -9,13 +9,12 @@ import Next from "@/components/next";
 import Number from "@/components/number";
 import Pause from "@/components/pause";
 import Point from "@/components/point";
-import classnames from "classnames";
-import React from "react";
-import { connect } from "react-redux";
-
 import { states } from "@/control/states";
 import { isFocus, visibilityChangeEvent } from "@/unit/";
 import { TransForm, i18nData, lan, lastRecord, speeds, transform } from "@/unit/const";
+import classnames from "classnames";
+import React from "react";
+import { connect } from "react-redux";
 import { StoreReducer } from "./store";
 
 interface CssProps {

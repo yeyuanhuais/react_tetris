@@ -1,7 +1,6 @@
 import cn from "classnames";
-import propTypes from "prop-types";
 import React from "react";
-
+import { CreateOptions, Filter } from "@/unit/const";
 import style from "./index.module.less";
 
 const render = (data: any[]) => (
@@ -14,23 +13,23 @@ const render = (data: any[]) => (
 
 const formate = (num: number) => (num < 10 ? `0${num}`.split("") : `${num}`.split(""));
 
-type Props = Readonly<{ time?: boolean; number?: number; length?: number }>;
+type Constructor={ time: boolean; number: number; length: number }
+type Props = Readonly<CreateOptions<Constructor,"time"|
+"number"|"length">>;
 type State = {
   timeCount: number;
   time: Date;
 };
 
-type Filter<T> = {
-  [K in keyof T as undefined extends T[K] ? K : never]: T[K];
-};
 export default class Number extends React.Component<Required<Props>, State> {
-  defaultProps: Required<Filter<Props>> = {
+  static defaultProps: Required<Filter<Props>> = {
     length: 6,
     time: false,
     number: 0,
   };
   static timeInterval: any;
-  constructor(props: { time: boolean; number: number; length: number }) {
+  static timeCount: number;
+  constructor(props: Constructor) {
     super(props);
     this.state = {
       timeCount: 0,
@@ -53,11 +52,11 @@ export default class Number extends React.Component<Required<Props>, State> {
     };
     clock();
   }
-  shouldComponentUpdate({ number }) {
+  shouldComponentUpdate({ number=0 }) {
     if (this.props.time) {
       // 右下角时钟
       if (this.state.timeCount !== Number.timeCount) {
-        if (this.state.timeCount !== false) {
+        if (this.state.timeCount ) {
           Number.timeCount = this.state.timeCount; // 记录clock上一次的缓存
         }
         return true;

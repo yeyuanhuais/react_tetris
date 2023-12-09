@@ -1,60 +1,66 @@
-import React from 'react';
-import cn from 'classnames';
-import propTypes from 'prop-types';
+import cn from "classnames";
+import propTypes from "prop-types";
+import React from "react";
 
-import style from './index.module.less';
-import { i18nData, lan } from '@/unit/const';
+import { CreateOptions, i18nData, lan } from "@/unit/const";
+import style from "./index.module.less";
 
-export default class Logo extends React.Component {
-  constructor() {
-    super();
+type Constructor = { reset: boolean; cur: boolean };
+type Props = Readonly<CreateOptions<Constructor, "cur">>;
+type State = {
+  style: string;
+  display: string;
+};
+export default class Logo extends React.Component<Required<Props>, State> {
+  static timeout: NodeJS.Timeout;
+  constructor(props: Constructor) {
+    super(props);
     this.state = {
       style: style.r1,
-      display: 'none',
+      display: "none",
     };
   }
   componentWillMount() {
     this.animate(this.props);
   }
-  componentWillReceiveProps(nextProps) {
-    if ( // 只有在游戏进入开始, 或结束时 触发改变
-      (
-        [this.props.cur, nextProps.cur].indexOf(false) !== -1 &&
-        (this.props.cur !== nextProps.cur)
-      ) ||
-      (this.props.reset !== nextProps.reset)
+  componentWillReceiveProps(nextProps: Constructor) {
+    if (
+      // 只有在游戏进入开始, 或结束时 触发改变
+      ([this.props.cur, nextProps.cur].indexOf(false) !== -1 && this.props.cur !== nextProps.cur) ||
+      this.props.reset !== nextProps.reset
     ) {
       this.animate(nextProps);
     }
   }
-  shouldComponentUpdate({ cur, reset }) {
+  shouldComponentUpdate({ cur, reset }: Constructor) {
     return cur !== this.props.cur || reset !== this.props.reset || !cur;
   }
-  animate({ cur, reset }) {
+  animate({ cur, reset }: Constructor) {
     clearTimeout(Logo.timeout);
     this.setState({
       style: style.r1,
-      display: 'none',
+      display: "none",
     });
     if (cur || reset) {
-      this.setState({ display: 'none' });
+      this.setState({ display: "none" });
       return;
     }
 
-    let m = 'r'; // 方向
+    let m = "r"; // 方向
     let count = 0;
 
-    const set = (func, delay) => {
+    const set = (func: () => void, delay: number) => {
       if (!func) {
         return;
       }
       Logo.timeout = setTimeout(func, delay);
     };
 
-    const show = (func) => { // 显示
+    const show = (func: () => void,) => {
+      // 显示
       set(() => {
         this.setState({
-          display: 'block',
+          display: "block",
         });
         if (func) {
           func();
@@ -62,10 +68,11 @@ export default class Logo extends React.Component {
       }, 150);
     };
 
-    const hide = (func) => { // 隐藏
+    const hide = (func: () => void,) => {
+      // 隐藏
       set(() => {
         this.setState({
-          display: 'none',
+          display: "none",
         });
         if (func) {
           func();
@@ -73,7 +80,9 @@ export default class Logo extends React.Component {
       }, 150);
     };
 
-    const eyes = (func, delay1, delay2) => { // 龙在眨眼睛
+    const eyes = (func: () => void, delay1
+    :number, delay2:number) => {
+      // 龙在眨眼睛
       set(() => {
         this.setState({ style: style[m + 2] });
         set(() => {
@@ -85,14 +94,15 @@ export default class Logo extends React.Component {
       }, delay1);
     };
 
-    const run = (func) => { // 开始跑步啦！
+    const run = (func: () => void) => {
+      // 开始跑步啦！
       set(() => {
         this.setState({ style: style[m + 4] });
         set(() => {
           this.setState({ style: style[m + 3] });
           count++;
           if (count === 10 || count === 20 || count === 30) {
-            m = m === 'r' ? 'l' : 'r';
+            m = m === "r" ? "l" : "r";
           }
           if (count < 40) {
             run(func);
@@ -108,17 +118,30 @@ export default class Logo extends React.Component {
 
     const dra = () => {
       count = 0;
-      eyes(() => {
-        eyes(() => {
-          eyes(() => {
-            this.setState({ style: style[m + 2] });
-            run(dra);
-          }, 150, 150);
-        }, 150, 150);
-      }, 1000, 1500);
+      eyes(
+        () => {
+          eyes(
+            () => {
+              eyes(
+                () => {
+                  this.setState({ style: style[m + 2] });
+                  run(dra);
+                },
+                150,
+                150,
+              );
+            },
+            150,
+            150,
+          );
+        },
+        1000,
+        1500,
+      );
     };
 
-    show(() => { // 忽隐忽现
+    show(() => {
+      // 忽隐忽现
       hide(() => {
         show(() => {
           hide(() => {
@@ -142,11 +165,3 @@ export default class Logo extends React.Component {
     );
   }
 }
-
-Logo.propTypes = {
-  cur: propTypes.bool,
-  reset: propTypes.bool.isRequired,
-};
-Logo.statics = {
-  timeout: null,
-};

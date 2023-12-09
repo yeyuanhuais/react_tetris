@@ -1,11 +1,15 @@
-import React from 'react';
+import { CreateOptions, Filter } from '@/unit/const';
 import cn from 'classnames';
-import propTypes from 'prop-types';
-
+import React from 'react';
 import style from './index.module.less';
 
-export default class Music extends React.Component {
-  shouldComponentUpdate({ data }) {
+type Constructor = { data: boolean };
+type Props = Readonly<CreateOptions<Constructor, "data">>;
+export default class Music extends React.Component<Required<Props>, {}> {
+  static defaultProps: Required<Filter<Props>> = {
+    data: false,
+  };
+  shouldComponentUpdate({ data }:Constructor) {
     return data !== this.props.data;
   }
   render() {
@@ -23,6 +27,3 @@ export default class Music extends React.Component {
   }
 }
 
-Music.propTypes = {
-  data: propTypes.bool.isRequired,
-};

@@ -1,15 +1,27 @@
-import { is } from "immutable";
-import propTypes from "prop-types";
-import React from "react";
-
 import todo from "@/control/todo";
 import store from "@/store";
+import { KeyboardState } from "@/store/keyboard";
 import { i18nData, lan } from "@/unit/const";
+import { is } from "immutable";
+import React from "react";
 import Button from "./button";
 import style from "./index.module.less";
 
-export default class Keyboard extends React.Component {
-  static propTypes: { filling: propTypes.Validator<number>; keyboard: propTypes.Validator<object>; };
+type Constructor = { keyboard: KeyboardState; filling: number };
+type Props = Readonly<Constructor>;
+type State = {
+  showPause: boolean;
+};
+export default class Keyboard extends React.Component<Required<Props>, State> {
+  static propTypes: { filling: number; keyboard: KeyboardState };
+  dom_rotate: Button | null;
+  dom_down: Button | null;
+  dom_left: Button | null;
+  dom_right: Button | null;
+  dom_space: Button | null;
+  dom_r: Button | null;
+  dom_s: Button | null;
+  dom_p: Button | null;
   componentDidMount() {
     const touchEventCatch = {}; // 对于手机操作, 触发了touchstart, 将作出记录, 不再触发后面的mouse事件
 
@@ -39,7 +51,7 @@ export default class Keyboard extends React.Component {
     // 阻止双指放大
     document.addEventListener("gesturestart", (e) => {
       if (e.preventDefault) {
-        event.preventDefault();
+        e.preventDefault();
       }
     });
 
@@ -103,7 +115,7 @@ export default class Keyboard extends React.Component {
       );
     });
   }
-  shouldComponentUpdate({ keyboard, filling }) {
+  shouldComponentUpdate({ keyboard, filling }:Constructor) {
     return !is(keyboard, this.props.keyboard) || filling !== this.props.filling;
   }
   render() {
@@ -212,8 +224,3 @@ export default class Keyboard extends React.Component {
     );
   }
 }
-
-Keyboard.propTypes = {
-  filling: propTypes.number.isRequired,
-  keyboard: propTypes.object.isRequired,
-};

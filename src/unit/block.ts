@@ -1,23 +1,18 @@
+import { CurType } from "@/store/cur";
 import { List } from "immutable";
 import { blockShape, origin } from "./const";
 
 export default class Block {
-  type: string | number;
+  type: CurType;
   rotateIndex: number;
   timeStamp: number;
-  shape: List<unknown>;
+  shape: List<List<number>>;
   xy: List<number> | undefined;
-  constructor(option: {
-    type: string;
-    rotateIndex: number;
-    timeStamp: number;
-    shape: List<unknown>;
-    xy: Iterable<unknown> | ArrayLike<unknown> | undefined;
-  }) {
+  constructor(option: { type: CurType; rotateIndex: number; timeStamp: number; shape: List<List<number>>; xy: List<number> }) {
     this.type = option.type;
     this.rotateIndex = option.rotateIndex ?? 0;
     this.timeStamp = option.timeStamp ?? Date.now();
-    this.shape = option.shape ?? List(blockShape[option.type].map((e: Iterable<unknown> | ArrayLike<unknown> | undefined) => List(e)));
+    this.shape = option.shape ?? List(blockShape[option.type].map((e) => List(e)));
     if (!option.xy) {
       switch (option.type) {
         case "I":
@@ -51,16 +46,16 @@ export default class Block {
   }
   rotate() {
     const shape = this.shape;
-    let result = List([]);
-    shape.forEach((m) =>
-      m.forEach((n, k) => {
+    let result: List<List<number>> = List([]);
+    shape.forEach((m: List<number>) =>
+      m.forEach((n: number, k: number) => {
         const index = m.size - k - 1;
         if (result.get(index) === undefined) {
           result = result.set(index, List([]));
         }
         const tempK = result.get(index).push(n);
         result = result.set(index, tempK);
-      })
+      }),
     );
     const nextXy = [this.xy?.get(0) + origin[this.type][this.rotateIndex][0], this.xy?.get(1) + origin[this.type][this.rotateIndex][1]];
     const nextRotateIndex = this.rotateIndex + 1 >= origin[this.type].length ? 0 : this.rotateIndex + 1;

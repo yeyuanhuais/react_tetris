@@ -1,6 +1,8 @@
 import { StoreReducer } from "@/store";
+import { CurType } from "@/store/cur";
 import { AnyAction, ThunkMiddleware } from "@reduxjs/toolkit";
 import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
+import { List } from "immutable";
 import { StorageKey, blockType } from "./const";
 
 /**
@@ -27,7 +29,7 @@ export const isFocus = () => {
 };
 
 /* 随机获取下一个方块类型 */
-export const getNextType = () => {
+export const getNextType = (): CurType => {
   const len = blockType.length;
   return blockType[Math.floor(Math.random() * len)];
 };
@@ -63,10 +65,10 @@ export const want = (
   });
 };
 /* 是否达到消除状态 */
-export const isClear = (matrix: any[]) => {
-  const cleatLines: any[] = [];
-  matrix.forEach((m: any[], k: any) => {
-    if (m.every((n: any) => !!n)) {
+export const isClear = (matrix: List<List<number>>): number[] | false => {
+  const cleatLines: number[] = [];
+  matrix.forEach((m: List<number>, k: number) => {
+    if (m.every((n: number) => !!n)) {
       cleatLines.push(k);
     }
   });

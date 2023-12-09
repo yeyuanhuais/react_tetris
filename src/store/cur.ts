@@ -4,13 +4,17 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { List } from "immutable";
 // 定义 slice state 的类型
 export type CurType = "I" | "L" | "J" | "Z" | "S" | "T" | "O";
-export interface CurState {
+export interface CurAction {
   type: CurType;
   rotateIndex: number;
+}
+export interface CurState {
+  type: CurType;
+  rotateIndex?: number;
   timeStamp?: number;
-  shape: List<unknown>;
-  xy: List<unknown>;
-  reset: boolean;
+  shape?: List<List<number>>;
+  xy?: List<number>;
+  reset?: boolean;
 }
 // 使用该类型定义初始 state
 const initialState: CurState = (() => {
