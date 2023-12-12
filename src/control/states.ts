@@ -10,7 +10,7 @@ import { changePause } from "@/store/pause";
 import { changePoints } from "@/store/points";
 import { changeReset } from "@/store/reset";
 import { changeSpeedRun } from "@/store/speedRun";
-import { isClear, isOver, want } from "@/unit";
+import { getNextType, isClear, isOver, want } from "@/unit";
 import { blankLine, blankMatrix, clearPoints, eachLines, speeds } from "@/unit/const";
 import { music } from "@/unit/music";
 import { List } from "immutable";
@@ -64,34 +64,35 @@ const {
 
 export const states = {
   //自动下落setTimeout变量
-  fallInterval: null,
+  fallInterval: undefined as NodeJS.Timeout | undefined,
+  nextInterval: undefined as NodeJS.Timeout | undefined,
   // 游戏开始
-  start: () => {
-    if (music) {
-      music.start();
+  start: async () => {
+    const musicData = await music();
+    if (musicData) {
+      musicData.start();
     }
     states.dispatchPoints(0);
     dispatch(changeSpeedRun(speedStartState));
     const startMatrix = getStartMatrix(startLinesState);
     dispatch(changeMatrix(startMatrix));
     dispatch(changeCur({ type: nextState }));
-    dispatch(changeNext({ type: nextState }));
+    dispatch(changeNext());
     states.auto();
   },
   /* 自动下落 */
   auto: (timeout?: number) => {
     const out = !timeout || timeout < 0 ? 0 : timeout;
-    let state = curState;
     const fall = () => {
-      const next = curState.fall();
+      const next = curState ? curState.fall() : { type: getNextType(), xy: List([]), shape: List(List([])) };
       if (want(next, matrixState)) {
-        dispatch(changeCur({ type: next }));
+        dispatch(changeCur({ type: next.type ?? "" }));
         states.fallInterval = setTimeout(fall, speeds[speedRunState - 1]);
       } else {
         let matrix = matrixState;
         const { shape, xy } = curState;
-        shape.forEach((m, k1) => {
-          m.forEach((n, k2) => {
+        shape.forEach((m: any[], k1: any) => {
+          m.forEach((n: any, k2: any) => {
             if (n && xy.get(0) + k1 >= 0) {
               let line = matrix.get(xy.get(0) + k1);
               line = line.set(xy.get(1) + k2, 1);
@@ -106,7 +107,7 @@ export const states = {
     states.fallInterval = setTimeout(fall, !out ? speeds[speedRunState - 1] : out);
   },
   /* 一个方块结束触发下一个 */
-  nextAround: (matrix, stopDownTrigger) => {
+  nextAround: async (matrix: List<List<number>>, stopDownTrigger: () => void) => {
     clearTimeout(states.nextInterval);
     dispatch(changeLock(true));
     dispatch(changeMatrix(matrix));
@@ -116,15 +117,16 @@ export const states = {
     // 速度越快，得分越高
     const addPoints = pointsState + 10 + (speedRunState - 1) * 2;
     states.dispatchPoints(addPoints);
+    const musicData = await music();
     if (isClear(matrix)) {
-      if (music.clear) {
-        music.clear();
+      if (musicData) {
+        musicData.clear();
       }
       return;
     }
     if (isOver(matrix)) {
-      if (music.gameOver) {
-        music.gameOver();
+      if (musicData) {
+        musicData.gameOver();
       }
       states.overStart();
       return;
@@ -137,7 +139,7 @@ export const states = {
     }, 100);
   },
   /* 页面焦点变换 */
-  focus: (isFocus) => {
+  focus: (isFocus: boolean) => {
     dispatch(changeFocus(isFocus));
     if (!isFocus) {
       clearTimeout(states.fallInterval);
@@ -148,7 +150,7 @@ export const states = {
     }
   },
   /* 暂停 */
-  pause: (isPause) => {
+  pause: (isPause: boolean) => {
     dispatch(changePause(isPause));
     if (!isPause) {
       clearTimeout(states.fallInterval);
@@ -157,7 +159,7 @@ export const states = {
     states.auto();
   },
   /* 消除行 */
-  clearLines: (matrix, lines) => {
+  clearLines: (matrix: any, lines: any[]) => {
     let newMatrix = matrix;
     lines.forEach((n) => {
       newMatrix = newMatrix.splice(n, 1);
@@ -197,7 +199,7 @@ export const states = {
   },
 
   // 写入分数
-  dispatchPoints: (point) => {
+  dispatchPoints: (point: number) => {
     // 写入分数, 同时判断是否创造最高分
     dispatch(changePoints(point));
     if (point > 0 && point > maxState) {

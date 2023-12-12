@@ -21,11 +21,11 @@ export default class Point extends React.Component<Required<Props>, State> {
       number: 0,
     };
   }
-  componentWillMount() {
+  componentDidMount() {
     this.onChange(this.props);
   }
-  componentWillReceiveProps(nextProps: Constructor) {
-    this.onChange(nextProps);
+  componentDidUpdate(prevProps: Constructor) {
+    this.onChange(prevProps);
   }
   shouldComponentUpdate({ cur, point, max }: Constructor) {
     const props = this.props;

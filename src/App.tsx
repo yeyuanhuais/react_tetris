@@ -40,10 +40,8 @@ class App extends React.Component<Props, State> {
       h: document.documentElement.clientHeight,
     };
   }
-  componentWillMount() {
-    window.addEventListener("resize", this.resize.bind(this), true);
-  }
   componentDidMount() {
+    window.addEventListener("resize", this.resize.bind(this), true);
     if (visibilityChangeEvent) {
       // 将页面的焦点变换写入store
       document.addEventListener(

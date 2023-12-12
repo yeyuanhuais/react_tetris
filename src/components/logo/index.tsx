@@ -20,16 +20,16 @@ export default class Logo extends React.Component<Required<Props>, State> {
       display: "none",
     };
   }
-  componentWillMount() {
+  componentDidMount() {
     this.animate(this.props);
   }
-  componentWillReceiveProps(nextProps: Constructor) {
+  componentDidUpdate(prevProps: Constructor) {
     if (
       // 只有在游戏进入开始, 或结束时 触发改变
-      ([this.props.cur, nextProps.cur].indexOf(false) !== -1 && this.props.cur !== nextProps.cur) ||
-      this.props.reset !== nextProps.reset
+      ([this.props.cur, prevProps.cur].indexOf(false) !== -1 && this.props.cur !== prevProps.cur) ||
+      this.props.reset !== prevProps.reset
     ) {
-      this.animate(nextProps);
+      this.animate(prevProps);
     }
   }
   shouldComponentUpdate({ cur, reset }: Constructor) {
@@ -56,7 +56,7 @@ export default class Logo extends React.Component<Required<Props>, State> {
       Logo.timeout = setTimeout(func, delay);
     };
 
-    const show = (func: () => void,) => {
+    const show = (func: () => void) => {
       // 显示
       set(() => {
         this.setState({
@@ -68,7 +68,7 @@ export default class Logo extends React.Component<Required<Props>, State> {
       }, 150);
     };
 
-    const hide = (func: () => void,) => {
+    const hide = (func: () => void) => {
       // 隐藏
       set(() => {
         this.setState({
@@ -80,8 +80,7 @@ export default class Logo extends React.Component<Required<Props>, State> {
       }, 150);
     };
 
-    const eyes = (func: () => void, delay1
-    :number, delay2:number) => {
+    const eyes = (func: () => void, delay1: number, delay2: number) => {
       // 龙在眨眼睛
       set(() => {
         this.setState({ style: style[m + 2] });

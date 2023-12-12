@@ -27,9 +27,9 @@ export default class Matrix extends React.Component<Required<Props>, State> {
       overState: null,
     };
   }
-  componentWillReceiveProps(nextProps: Constructor) {
-    const clears = isClear(nextProps.matrix);
-    const overs = nextProps.reset;
+  componentDidUpdate(prevProps: Constructor) {
+    const clears = isClear(prevProps.matrix);
+    const overs = prevProps.reset;
     this.setState({
       clearLines: clears,
       isOver: overs,
@@ -38,7 +38,7 @@ export default class Matrix extends React.Component<Required<Props>, State> {
       this.clearAnimate();
     }
     if (!clears && overs && !this.state.isOver) {
-      this.over(nextProps);
+      this.over(prevProps);
     }
   }
   shouldComponentUpdate(nextProps: Constructor) {

@@ -35,10 +35,10 @@ export const getNextType = (): CurType => {
 };
 /* 方块是否能够移动到指定位置 */
 export const want = (
-  next: { xy: any; shape: any },
+  next: { xy: List<number>; shape: any },
   matrix: { get: (arg0: any) => { (): any; new (): any; get: { (arg0: any): any; new (): any } } },
 ) => {
-  const { xy, shape } = next;
+  const { xy = List([]), shape } = next;
   const horizontal = shape.get(0).size;
   return shape.every((m: any[], k1: any) => {
     m.every((n: any, k2: any) => {

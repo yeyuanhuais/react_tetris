@@ -1,26 +1,28 @@
-import React from 'react';
-import QRCode from 'qrcode';
-import style from './index.module.less';
-import { transform, i18nData, lan } from '@/unit/const';
-import { isMobile } from '@/unit';
+import { isMobile } from "@/unit";
+import { i18nData, lan, transform } from "@/unit/const";
+import QRCode from "qrcode";
+import React from "react";
+import style from "./index.module.less";
 
-
-export default class Guide extends React.Component {
-  constructor() {
-    super();
+type Constructor = {};
+type Props = Readonly<Constructor>;
+type State = {
+  QRCode: string;
+  isMobile: boolean;
+};
+export default class Guide extends React.Component<Required<Props>, State> {
+  constructor(props: Props) {
+    super(props);
     this.state = {
       isMobile: isMobile(),
-      QRCode: '',
+      QRCode: "",
     };
   }
-  componentWillMount() {
-    if (this.state.isMobile) {
-      return;
+  shouldComponentUpdate(state: State) {
+    if (state.isMobile) {
+      return false;
     }
-    QRCode.toDataURL(location.href, { margin: 1 })
-        .then(dataUrl => this.setState({ QRCode: dataUrl }));
-  }
-  shouldComponentUpdate(state) {
+    QRCode.toDataURL(location.href, { margin: 1 }).then((dataUrl: string) => this.setState({ QRCode: dataUrl }));
     if (state.QRCode === this.state.QRCode) {
       return false;
     }
@@ -28,35 +30,40 @@ export default class Guide extends React.Component {
   }
   render() {
     if (this.state.isMobile) {
-      return (
-        null
-      );
+      return null;
     }
     return (
-      <div style={{ display: this.state.isMobile ? 'none' : 'block' }}>
+      <div style={{ display: this.state.isMobile ? "none" : "block" }}>
         <div className={`${style.guide} ${style.right}`}>
           <div className={style.up}>
-            <em style={{ [transform]: 'translate(0,-3px) scale(1,2)' }} />
+            <em style={{ [transform]: "translate(0,-3px) scale(1,2)" }} />
           </div>
           <div className={style.left}>
-            <em style={{ [transform]: 'translate(-7px,3px) rotate(-90deg) scale(1,2)' }} />
+            <em style={{ [transform]: "translate(-7px,3px) rotate(-90deg) scale(1,2)" }} />
           </div>
           <div className={style.down}>
-            <em style={{ [transform]: 'translate(0,9px) rotate(180deg) scale(1,2)' }} /></div>
+            <em style={{ [transform]: "translate(0,9px) rotate(180deg) scale(1,2)" }} />
+          </div>
           <div className={style.right}>
-            <em style={{ [transform]: 'translate(7px,3px)rotate(90deg) scale(1,2)' }} />
+            <em style={{ [transform]: "translate(7px,3px)rotate(90deg) scale(1,2)" }} />
           </div>
         </div>
         <div className={`${style.guide} ${style.left}`}>
           <p>
-            <a href="https://github.com/chvin/react-tetris" rel="noopener noreferrer" target="_blank" title={i18nData.linkTitle[lan]}>{`${i18nData.github[lan]}:`}</a><br />
+            <a
+              href="https://github.com/chvin/react-tetris"
+              rel="noopener noreferrer"
+              target="_blank"
+              title={i18nData.linkTitle[lan]}
+            >{`${i18nData.github[lan]}:`}</a>
+            <br />
             <iframe
               src="https://ghbtns.com/github-btn.html?user=chvin&repo=react-tetris&type=star&count=true"
               frameBorder="0"
               scrolling="0"
               width="170px"
               height="20px"
-              style={{ [transform]: 'scale(1.68)', [`${transform}Origin`]: 'center left' }}
+              style={{ [transform]: "scale(1.68)", [`${transform}Origin`]: "center left" }}
             />
             <br />
             <iframe
@@ -65,21 +72,17 @@ export default class Guide extends React.Component {
               scrolling="0"
               width="170px"
               height="20px"
-              style={{ [transform]: 'scale(1.68)', [`${transform}Origin`]: 'center left' }}
+              style={{ [transform]: "scale(1.68)", [`${transform}Origin`]: "center left" }}
             />
           </p>
           <div className={style.space}>SPACE</div>
         </div>
-        { this.state.QRCode !== '' ? (
+        {this.state.QRCode !== "" ? (
           <div className={`${style.guide} ${style.qr}`}>
-            <img
-              src={this.state.QRCode}
-              alt={i18nData.QRCode[lan]}
-            />
+            <img src={this.state.QRCode} alt={i18nData.QRCode[lan]} />
           </div>
-        ) : null }
+        ) : null}
       </div>
     );
   }
 }
-

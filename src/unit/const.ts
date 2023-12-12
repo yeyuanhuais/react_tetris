@@ -18,7 +18,7 @@ export const blockShape: { [key in CurType]: List<List<number>> } = {
   T: List([List([0, 1, 0]), List([1, 1, 1])]),
 };
 export const blockType = Object.keys(blockShape) as CurType[];
-export const origin: { [key in CurType]: List<List<number>> } = {
+export const origin = {
   I: List([List([-1, 1]), List([1, -1])]),
   L: List([List([0, 0])]),
   J: List([List([0, 0])]),

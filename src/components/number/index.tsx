@@ -1,6 +1,6 @@
+import { CreateOptions, Filter } from "@/unit/const";
 import cn from "classnames";
 import React from "react";
-import { CreateOptions, Filter } from "@/unit/const";
 import style from "./index.module.less";
 
 const render = (data: any[]) => (
@@ -36,7 +36,7 @@ export default class Number extends React.Component<Required<Props>, State> {
       time: new Date(),
     };
   }
-  componentWillMount() {
+  componentDidMount() {
     if (!this.props.time) {
       return;
     }

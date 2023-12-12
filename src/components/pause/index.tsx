@@ -23,7 +23,7 @@ export default class Pause extends React.Component<Required<Props>, State> {
   componentDidMount() {
     this.setShake(this.props.data);
   }
-  componentWillReceiveProps({ data }: Constructor) {
+  componentDidUpdate({ data }: Constructor) {
     this.setShake(data);
   }
   shouldComponentUpdate({ data }: Constructor) {

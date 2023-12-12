@@ -29,11 +29,11 @@ export default class Next extends React.Component<Required<Props>, State> {
       block: List(empty),
     };
   }
-  componentWillMount() {
+  componentDidMount() {
     this.build(this.props.data);
   }
-  componentWillReceiveProps(nextProps: Constructor) {
-    this.build(nextProps.data);
+  componentDidUpdate(prevProps: Constructor) {
+    this.build(prevProps.data);
   }
   shouldComponentUpdate(nextProps: Constructor) {
     return nextProps.data !== this.props.data;

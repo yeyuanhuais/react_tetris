@@ -1,3 +1,4 @@
+import { getNextType } from "@/unit";
 import Block from "@/unit/block";
 import { lastRecord } from "@/unit/const";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
@@ -8,14 +9,7 @@ export interface CurAction {
   type: CurType;
   rotateIndex: number;
 }
-export interface CurState {
-  type: CurType;
-  rotateIndex?: number;
-  timeStamp?: number;
-  shape?: List<List<number>>;
-  xy?: List<number>;
-  reset?: boolean;
-}
+export type CurState = Block | null;
 // 使用该类型定义初始 state
 const initialState: CurState = (() => {
   if (!lastRecord || !lastRecord.cur) {
@@ -36,8 +30,8 @@ export const curSlice = createSlice({
   initialState,
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
-    changeCur: (state, action: PayloadAction<CurState>) => {
-      state = action.payload.reset === true ? null : new Block(action.payload);
+    changeCur: (state, action: PayloadAction<{ type?: CurType; reset?: boolean }>) => {
+      state = action.payload.reset === true ? null : new Block({ ...action.payload, type: action.payload.type ?? getNextType() });
     },
   },
 });

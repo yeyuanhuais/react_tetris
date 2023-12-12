@@ -7,8 +7,8 @@ export default class Block {
   rotateIndex: number;
   timeStamp: number;
   shape: List<List<number>>;
-  xy: List<number> | undefined;
-  constructor(option: { type: CurType; rotateIndex: number; timeStamp: number; shape: List<List<number>>; xy: List<number> }) {
+  xy: List<number> = List([0, 0]);
+  constructor(option: { type: CurType; rotateIndex?: number; timeStamp?: number; shape?: List<List<number>>; xy?: List<number> }) {
     this.type = option.type;
     this.rotateIndex = option.rotateIndex ?? 0;
     this.timeStamp = option.timeStamp ?? Date.now();
@@ -50,15 +50,15 @@ export default class Block {
     shape.forEach((m: List<number>) =>
       m.forEach((n: number, k: number) => {
         const index = m.size - k - 1;
-        if (result.get(index) === undefined) {
-          result = result.set(index, List([]));
-        }
-        const tempK = result.get(index).push(n);
-        result = result.set(index, tempK);
+        const arrayAtIndex = result.get(index) || List([]);
+        const tempK = arrayAtIndex.push(n);
+        result = result.set(index, List(tempK));
       }),
     );
-    const nextXy = [this.xy?.get(0) + origin[this.type][this.rotateIndex][0], this.xy?.get(1) + origin[this.type][this.rotateIndex][1]];
-    const nextRotateIndex = this.rotateIndex + 1 >= origin[this.type].length ? 0 : this.rotateIndex + 1;
+    console.log("%c origin", "font-size:13px; background:pink; color:#bf2c9f;", origin);
+    const originTypeLsit = origin[this.type];
+    const nextXy = [this.xy?.get(0) + originTypeLsit[this.rotateIndex][0], this.xy?.get(1) + originTypeLsit[this.rotateIndex][1]];
+    const nextRotateIndex = this.rotateIndex + 1 >= originTypeLsit.toArray().length ? 0 : this.rotateIndex + 1;
     return {
       shape: result,
       type: this.type,
@@ -71,7 +71,7 @@ export default class Block {
     return {
       shape: this.shape,
       type: this.type,
-      xy: [this.xy.get(0) + n, this.xy.get(1)],
+      xy: [this.xy.get(0) ?? 0 + n, this.xy.get(1)],
       rotateIndex: this.rotateIndex,
       timeStamp: Date.now(),
     };
@@ -80,7 +80,7 @@ export default class Block {
     return {
       shape: this.shape,
       type: this.type,
-      xy: [this.xy.get(0), this.xy.get(1) + 1],
+      xy: [this.xy.get(0), this.xy.get(1) ?? 0 + 1],
       rotateIndex: this.rotateIndex,
       timeStamp: this.timeStamp,
     };
@@ -89,7 +89,7 @@ export default class Block {
     return {
       shape: this.shape,
       type: this.type,
-      xy: [this.xy.get(0), this.xy.get(1) - 1],
+      xy: [this.xy.get(0), this.xy.get(1) ?? 0 - 1],
       rotateIndex: this.rotateIndex,
       timeStamp: this.timeStamp,
     };
