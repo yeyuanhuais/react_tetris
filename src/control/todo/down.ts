@@ -16,12 +16,13 @@ const down = () => {
       key: "down",
       begin: 40,
       interval: 40,
-      callback: (stopDownTrigger: any) => {
+      callback: async (stopDownTrigger: any) => {
         if (lockState) {
           return;
         }
-        if (music) {
-          music?.move();
+        const musicData = await music();
+        if (musicData) {
+          musicData.move();
         }
         if (!curState) {
           return;
@@ -39,10 +40,10 @@ const down = () => {
           const { shape, xy } = curState;
           shape.forEach((m: any[], k1: any) => {
             m.forEach((n: any, k2: any) => {
-              if (n && xy.get(0) + k1 >= 0) {
-                let line = matrix.get(xy.get(0) + k1);
-                line = line.set(xy.get(1) + k2, 1);
-                matrix = matrix.set(xy.get(0) + k1, line);
+              if (n && xy[0] + k1 >= 0) {
+                let line = matrix[xy[0] + k1];
+                line[xy[1] + k2] = 1;
+                matrix[xy[0] + k1] = line;
               }
             });
           });
@@ -55,11 +56,12 @@ const down = () => {
       key: "down",
       begin: 200,
       interval: 100,
-      callback: () => {
+      callback: async () => {
         if (lockState) return;
         if (curState) return;
-        if (music.move) {
-          music.move();
+        const musicData = await music();
+        if (musicData) {
+          musicData.move();
         }
         let startLines = startLinesState - 1 < 0 ? 10 : startLinesState - 1;
         dispatch(changeStartLines(startLines));

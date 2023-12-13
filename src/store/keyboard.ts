@@ -20,28 +20,28 @@ export const keyboardSlice = createSlice({
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeKeyDown: (state, action: PayloadAction<KeyBoolean>) => {
-      state.down = action.payload;
+      return { ...state, down: action.payload };
     },
     changeKeyDrop: (state, action: PayloadAction<KeyBoolean>) => {
-      state.drop = action.payload;
+      return { ...state, drop: action.payload };
     },
     changeKeyLeft: (state, action: PayloadAction<KeyBoolean>) => {
-      state.left = action.payload;
+      return { ...state, left: action.payload };
     },
     changeKeyMusic: (state, action: PayloadAction<KeyBoolean>) => {
-      state.music = action.payload;
+      return { ...state, music: action.payload };
     },
     changeKeyPause: (state, action: PayloadAction<KeyBoolean>) => {
-      state.pause = action.payload;
+      return { ...state, pause: action.payload };
     },
     changeKeyReset: (state, action: PayloadAction<KeyBoolean>) => {
-      state.reset = action.payload;
+      return { ...state, reset: action.payload };
     },
     changeKeyRight: (state, action: PayloadAction<KeyBoolean>) => {
-      state.right = action.payload;
+      return { ...state, right: action.payload };
     },
     changeKeyRotate: (state, action: PayloadAction<KeyBoolean>) => {
-      state.rotate = action.payload;
+      return { ...state, rotate: action.payload };
     },
   },
 });

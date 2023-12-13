@@ -1,11 +1,11 @@
-import down from './down';
-import left from './left';
-import p from './pause';
-import r from './reset';
-import right from './right';
-import rotate from './rotate';
-import s from './music';
-import space from './space';
+import down from "./down";
+import left from "./left";
+import music from "./music";
+import pause from "./pause";
+import reset from "./reset";
+import right from "./right";
+import rotate from "./rotate";
+import space from "./space";
 
 export default {
   left,
@@ -13,7 +13,7 @@ export default {
   rotate,
   right,
   space,
-  r,
-  p,
-  s,
-};
+  reset,
+  pause,
+  music,
+} as { [key: string]: { [key: string]: any } };

@@ -2,10 +2,10 @@ import todo from "@/control/todo";
 import store from "@/store";
 import { KeyboardState } from "@/store/keyboard";
 import { i18nData, lan } from "@/unit/const";
-import { is } from "immutable";
 import React from "react";
 import Button from "./button";
 import style from "./index.module.less";
+import { areArraysEqual } from "@/unit";
 
 type Constructor = { keyboard: KeyboardState; filling: number };
 type Props = Readonly<Constructor>;
@@ -116,7 +116,7 @@ export default class Keyboard extends React.Component<Required<Props>, State> {
     });
   }
   shouldComponentUpdate({ keyboard, filling }:Constructor) {
-    return !is(keyboard, this.props.keyboard) || filling !== this.props.filling;
+    return !areArraysEqual(keyboard, this.props.keyboard) || filling !== this.props.filling;
   }
   render() {
     const keyboard = this.props.keyboard;

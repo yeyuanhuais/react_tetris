@@ -11,7 +11,7 @@ export const focusSlice = createSlice({
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeFocus: (state, action: PayloadAction<FocusState>) => {
-      state = action.payload;
+      return action.payload;
     },
   },
 });

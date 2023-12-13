@@ -2,6 +2,7 @@ import store from "@/store";
 import { changeCur } from "@/store/cur";
 import { changeKeyLeft } from "@/store/keyboard";
 import { changeSpeedStart } from "@/store/speedStart";
+import { want } from "@/unit";
 import { delays, speeds } from "@/unit/const";
 import event from "@/unit/event";
 import { music } from "@/unit/music";
@@ -22,12 +23,13 @@ const down = () => {
     key: "left",
     begin: 200,
     interval: 100,
-    callback: () => {
+    callback: async () => {
       if (lockState) {
         return;
       }
-      if (music.move) {
-        music.move();
+      const musicData = await music();
+      if (musicData) {
+        musicData.move();
       }
       if (!curState) {
         let speed = speedStartState - 1 < 1 ? 6 : speedStartState - 1;
@@ -42,12 +44,12 @@ const down = () => {
       const delay = delays[speedRunState - 1];
       let timeStamp;
       if (want(next, matrixState)) {
-        next.timeStamp += parseInt(delay, 10);
+        next.timeStamp += delay;
         dispatch(changeCur(next));
         timeStamp = next.timeStamp;
       } else {
         let cur = curState;
-        cur.timeStamp += parseInt(parseInt(delay, 10) / 1.5, 10);
+        cur.timeStamp += delay / 1.5;
         dispatch(changeCur(cur));
         timeStamp = cur.timeStamp;
       }

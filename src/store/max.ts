@@ -16,7 +16,7 @@ export const maxSlice = createSlice({
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeMax: (state, action: PayloadAction<MaxState>) => {
-      state = action.payload > MaxData ? MaxData : action.payload;
+      return action.payload > MaxData ? MaxData : action.payload;
     },
   },
 });

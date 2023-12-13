@@ -13,7 +13,7 @@ import { changeSpeedRun } from "@/store/speedRun";
 import { getNextType, isClear, isOver, want } from "@/unit";
 import { blankLine, blankMatrix, clearPoints, eachLines, speeds } from "@/unit/const";
 import { music } from "@/unit/music";
-import { List } from "immutable";
+
 /* 生成getStartMatrix */
 const getStartMatrix = (startLines: number) => {
   // 返回标亮个数在min-max之间一行方块，包含边界
@@ -29,20 +29,20 @@ const getStartMatrix = (startLines: number) => {
       const index = (line.length + 1) * Math.random();
       line.splice(index, 0, 0);
     }
-    return List(line);
+    return line;
   };
-  let startMatrix = List<List<number>>([]);
+  let startMatrix = [];
   for (let i = 0; i < startLines; i++) {
     if (i <= 2) {
-      startMatrix = startMatrix.push(getLine(5, 8));
+      startMatrix.push(getLine(5, 8));
     } else if (i <= 6) {
-      startMatrix = startMatrix.push(getLine(4, 9));
+      startMatrix.push(getLine(4, 9));
     } else {
-      startMatrix = startMatrix.push(getLine(3, 9));
+      startMatrix.push(getLine(3, 9));
     }
   }
   for (let i = 0, len = 20 - startLines; i < len; i++) {
-    startMatrix = startMatrix.unshift(List(blankLine));
+    startMatrix.unshift(blankLine);
   }
   return startMatrix;
 };
@@ -84,19 +84,22 @@ export const states = {
   auto: (timeout?: number) => {
     const out = !timeout || timeout < 0 ? 0 : timeout;
     const fall = () => {
-      const next = curState ? curState.fall() : { type: getNextType(), xy: List([]), shape: List(List([])) };
+      const next = curState ? curState.fall() : { type: getNextType(), xy: [], shape: [] };
       if (want(next, matrixState)) {
         dispatch(changeCur({ type: next.type ?? "" }));
         states.fallInterval = setTimeout(fall, speeds[speedRunState - 1]);
       } else {
         let matrix = matrixState;
+        if (!curState) {
+          return;
+        }
         const { shape, xy } = curState;
         shape.forEach((m: any[], k1: any) => {
           m.forEach((n: any, k2: any) => {
-            if (n && xy.get(0) + k1 >= 0) {
-              let line = matrix.get(xy.get(0) + k1);
-              line = line.set(xy.get(1) + k2, 1);
-              matrix = matrix.set(xy.get(0) + k1, line);
+            if (n && xy[0] + k1 >= 0) {
+              let line = matrix[xy[0] + k1];
+              line[xy[1] + k2] = 1;
+              matrix[xy[0] + k1] = line;
             }
           });
         });
@@ -107,7 +110,7 @@ export const states = {
     states.fallInterval = setTimeout(fall, !out ? speeds[speedRunState - 1] : out);
   },
   /* 一个方块结束触发下一个 */
-  nextAround: async (matrix: List<List<number>>, stopDownTrigger: () => void) => {
+  nextAround: async (matrix: number[][], stopDownTrigger?: () => void) => {
     clearTimeout(states.nextInterval);
     dispatch(changeLock(true));
     dispatch(changeMatrix(matrix));
@@ -159,11 +162,11 @@ export const states = {
     states.auto();
   },
   /* 消除行 */
-  clearLines: (matrix: any, lines: any[]) => {
+  clearLines: (matrix: number[][], lines: number[]) => {
     let newMatrix = matrix;
     lines.forEach((n) => {
       newMatrix = newMatrix.splice(n, 1);
-      newMatrix = newMatrix.unshift(List(blankLine));
+      newMatrix.unshift(blankLine);
     });
     dispatch(changeMatrix(newMatrix));
     dispatch(changeCur({ type: nextState }));

@@ -13,9 +13,9 @@ export const musicSlice = createSlice({
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeMusic: (state, action: PayloadAction<MusicState>) => {
       if (!hasWebAudioAPI) {
-        state = false;
+        return false;
       }
-      state = action.payload;
+      return action.payload;
     },
   },
 });

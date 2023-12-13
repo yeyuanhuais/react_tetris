@@ -16,7 +16,7 @@ export const pointsSlice = createSlice({
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changePoints: (state, action: PayloadAction<PointsState>) => {
-      state = action.payload > maxPoint ? maxPoint : action.payload;
+      return action.payload > maxPoint ? maxPoint : action.payload;
     },
   },
 });

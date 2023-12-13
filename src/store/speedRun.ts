@@ -14,7 +14,7 @@ export const speedRunSlice = createSlice({
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeSpeedRun: (state, action: PayloadAction<SpeedRunState>) => {
-      state = action.payload;
+      return action.payload;
     },
   },
 });

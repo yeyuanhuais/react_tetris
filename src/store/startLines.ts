@@ -15,7 +15,7 @@ export const startLinesSlice = createSlice({
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeStartLines: (state, action: PayloadAction<StartLinesState>) => {
-      state = action.payload;
+      return action.payload;
     },
   },
 });

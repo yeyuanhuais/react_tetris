@@ -2,7 +2,7 @@ import { getNextType } from "@/unit";
 import Block from "@/unit/block";
 import { lastRecord } from "@/unit/const";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { List } from "immutable";
+
 // 定义 slice state 的类型
 export type CurType = "I" | "L" | "J" | "Z" | "S" | "T" | "O";
 export interface CurAction {
@@ -19,7 +19,7 @@ const initialState: CurState = (() => {
   const option = {
     type: cur.type,
     rotateIndex: cur.rotateIndex,
-    shape: List(cur.shape.map((e) => List(e))),
+    shape: cur.shape.map((e) => e),
     xy: cur.xy,
   };
   let block = new Block(option);
@@ -31,7 +31,7 @@ export const curSlice = createSlice({
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeCur: (state, action: PayloadAction<{ type?: CurType; reset?: boolean }>) => {
-      state = action.payload.reset === true ? null : new Block({ ...action.payload, type: action.payload.type ?? getNextType() });
+      return action.payload.reset === true ? null : new Block({ ...action.payload, type: action.payload.type ?? getNextType() });
     },
   },
 });

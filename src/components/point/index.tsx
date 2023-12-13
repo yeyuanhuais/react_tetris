@@ -24,9 +24,9 @@ export default class Point extends React.Component<Required<Props>, State> {
   componentDidMount() {
     this.onChange(this.props);
   }
-  componentDidUpdate(prevProps: Constructor) {
-    this.onChange(prevProps);
-  }
+  // componentWillReceiveProps(prevProps: Constructor) {
+  //   this.onChange(prevProps);
+  // }
   shouldComponentUpdate({ cur, point, max }: Constructor) {
     const props = this.props;
     return cur !== props.cur || point !== props.point || max !== props.max || !props.cur;

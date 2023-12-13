@@ -13,7 +13,7 @@ export const clearLinesSlice = createSlice({
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeClearLines: (state, action: PayloadAction<ClearLinesState>) => {
-      state = action.payload;
+      return action.payload;
     },
   },
 });

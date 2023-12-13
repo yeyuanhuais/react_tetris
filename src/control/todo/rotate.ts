@@ -7,7 +7,7 @@ import event from "@/unit/event";
 import { music } from "@/unit/music";
 import { states } from "../states";
 
-const down = () => {
+const down = async () => {
   const dispatch = store.dispatch;
   const { startLines: startLinesState, cur: curState, matrix: matrixState, pause: pauseState, lock: lockState } = store.getState();
   dispatch(changeKeyRotate(true));
@@ -15,7 +15,7 @@ const down = () => {
     event.down({
       key: "rotate",
       once: true,
-      callback: () => {
+      callback: async () => {
         if (lockState) {
           return;
         }
@@ -26,8 +26,9 @@ const down = () => {
         if (cur === null) {
           return;
         }
-        if (music.rotate) {
-          music.rotate();
+        const musicData = await music();
+        if (musicData) {
+          musicData.rotate();
         }
         const next = cur.rotate();
         if (want(next, matrixState)) {
@@ -40,12 +41,13 @@ const down = () => {
       key: "rotate",
       begin: 200,
       interval: 100,
-      callback: () => {
+      callback: async () => {
         if (lockState) {
           return;
         }
-        if (music.move) {
-          music.move();
+        const musicData = await music();
+        if (musicData) {
+          musicData.move();
         }
         const cur = curState;
         if (cur) {

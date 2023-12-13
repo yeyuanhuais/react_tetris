@@ -1,64 +1,64 @@
 import { CurType } from "@/store/cur";
-import { List } from "immutable";
 import { blockShape, origin } from "./const";
 
 export default class Block {
   type: CurType;
   rotateIndex: number;
   timeStamp: number;
-  shape: List<List<number>>;
-  xy: List<number> = List([0, 0]);
-  constructor(option: { type: CurType; rotateIndex?: number; timeStamp?: number; shape?: List<List<number>>; xy?: List<number> }) {
+  shape: number[][];
+  xy: number[] = [0, 0];
+  constructor(option: { type: CurType; rotateIndex?: number; timeStamp?: number; shape?: number[][]; xy?: number[] }) {
     this.type = option.type;
     this.rotateIndex = option.rotateIndex ?? 0;
     this.timeStamp = option.timeStamp ?? Date.now();
-    this.shape = option.shape ?? List(blockShape[option.type].map((e) => List(e)));
+    this.shape = option.shape ?? blockShape[option.type].map((e) => e);
     if (!option.xy) {
       switch (option.type) {
         case "I":
-          this.xy = List([0, 3]);
+          this.xy = [0, 3];
           break;
         case "L":
-          this.xy = List([-1, 4]);
+          this.xy = [-1, 4];
           break;
         case "J":
-          this.xy = List([-1, 4]);
+          this.xy = [-1, 4];
           break;
         case "Z":
-          this.xy = List([-1, 4]);
+          this.xy = [-1, 4];
           break;
         case "S":
-          this.xy = List([-1, 4]);
+          this.xy = [-1, 4];
           break;
         case "O":
-          this.xy = List([-1, 4]);
+          this.xy = [-1, 4];
           break;
         case "T":
-          this.xy = List([-1, 4]);
+          this.xy = [-1, 4];
           break;
 
         default:
           break;
       }
     } else {
-      this.xy = List(option.xy);
+      this.xy = option.xy;
     }
   }
   rotate() {
     const shape = this.shape;
-    let result: List<List<number>> = List([]);
-    shape.forEach((m: List<number>) =>
+    let result: number[][] = [];
+    shape.forEach((m: number[]) =>
       m.forEach((n: number, k: number) => {
-        const index = m.size - k - 1;
-        const arrayAtIndex = result.get(index) || List([]);
-        const tempK = arrayAtIndex.push(n);
-        result = result.set(index, List(tempK));
+        const index = m.length - k - 1;
+        const arrayAtIndex = result[index] || [];
+        arrayAtIndex.push(n);
+        const tempK: number[] = arrayAtIndex;
+        result[index] = tempK;
       }),
     );
     console.log("%c origin", "font-size:13px; background:pink; color:#bf2c9f;", origin);
-    const originTypeLsit = origin[this.type];
-    const nextXy = [this.xy?.get(0) + originTypeLsit[this.rotateIndex][0], this.xy?.get(1) + originTypeLsit[this.rotateIndex][1]];
-    const nextRotateIndex = this.rotateIndex + 1 >= originTypeLsit.toArray().length ? 0 : this.rotateIndex + 1;
+    const originTypeList = origin[this.type];
+    const nextXy = [this.xy[0] + originTypeList[this.rotateIndex][0], this.xy[1] + originTypeList[this.rotateIndex][1]];
+    const nextRotateIndex = this.rotateIndex + 1 >= originTypeList.length ? 0 : this.rotateIndex + 1;
     return {
       shape: result,
       type: this.type,
@@ -71,7 +71,7 @@ export default class Block {
     return {
       shape: this.shape,
       type: this.type,
-      xy: [this.xy.get(0) ?? 0 + n, this.xy.get(1)],
+      xy: [this.xy[0] ?? 0 + n, this.xy[1]],
       rotateIndex: this.rotateIndex,
       timeStamp: Date.now(),
     };
@@ -80,7 +80,7 @@ export default class Block {
     return {
       shape: this.shape,
       type: this.type,
-      xy: [this.xy.get(0), this.xy.get(1) ?? 0 + 1],
+      xy: [this.xy[0], this.xy[1] ?? 0 + 1],
       rotateIndex: this.rotateIndex,
       timeStamp: this.timeStamp,
     };
@@ -89,7 +89,7 @@ export default class Block {
     return {
       shape: this.shape,
       type: this.type,
-      xy: [this.xy.get(0), this.xy.get(1) ?? 0 - 1],
+      xy: [this.xy[0], this.xy[1] ?? 0 - 1],
       rotateIndex: this.rotateIndex,
       timeStamp: this.timeStamp,
     };

@@ -1,6 +1,6 @@
 import { CurType } from "@/store/cur";
 import { blockShape } from "@/unit/const";
-import { List } from "immutable";
+
 import React from "react";
 import style from "./index.module.less";
 
@@ -15,18 +15,21 @@ const xy = {
   T: [0, 0],
 };
 
-const empty = [List([0, 0, 0, 0]), List([0, 0, 0, 0])];
+const empty = [
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
 
 type Constructor = { data: CurType };
 type Props = Readonly<Constructor>;
 type State = {
-  block: List<List<number>>;
+  block: number[][];
 };
 export default class Next extends React.Component<Required<Props>, State> {
   constructor(props: Constructor) {
     super(props);
     this.state = {
-      block: List(empty),
+      block: empty,
     };
   }
   componentDidMount() {
@@ -40,11 +43,11 @@ export default class Next extends React.Component<Required<Props>, State> {
   }
   build(type: CurType) {
     const shape = blockShape[type];
-    const block: List<List<number>> = List(empty.map((e) => List([...e])));
+    const block: number[][] = empty.map((e) => [...e]);
     shape.forEach((m, k1) => {
       m.forEach((n, k2) => {
         if (n) {
-          block.updateIn([k1 + xy[type][0], k2 + xy[type][1]], () => 1);
+          block[k1 + xy[type][0]][k2 + xy[type][1]] = 1;
         }
       });
     });

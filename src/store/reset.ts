@@ -11,7 +11,7 @@ export const resetSlice = createSlice({
   reducers: {
     // 使用 PayloadAction 类型声明 `action.payload` 的内容
     changeReset: (state, action: PayloadAction<ResetState>) => {
-      state = action.payload;
+      return action.payload;
     },
   },
 });

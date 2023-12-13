@@ -23,12 +23,13 @@ const down = () => {
     key: "right",
     begin: 200,
     interval: 100,
-    callback: () => {
+    callback: async () => {
       if (lockState) {
         return;
       }
-      if (music.move) {
-        music.move();
+      const musicData = await music();
+      if (musicData) {
+        musicData.move();
       }
       const cur = curState;
       if (cur !== null) {
@@ -40,15 +41,15 @@ const down = () => {
         const delay = delays[speedRunState - 1];
         let timeStamp;
         if (want(next, matrixState)) {
-          next.timeStamp += parseInt(delay, 10);
+          next.timeStamp += delay;
           dispatch(changeCur(next));
           timeStamp = next.timeStamp;
         } else {
-          cur.timeStamp += parseInt(parseInt(delay, 10) / 1.5, 10); // 真实移动delay多一点，碰壁delay少一点
+          cur.timeStamp += delay / 1.5; // 真实移动delay多一点，碰壁delay少一点
           dispatch(changeCur(cur));
           timeStamp = cur.timeStamp;
         }
-        const remain = speeds[speedRunStatef - 1] - (Date.now() - timeStamp);
+        const remain = speeds[speedRunState - 1] - (Date.now() - timeStamp);
         states.auto(remain);
       } else {
         let speed = speedStartState;
