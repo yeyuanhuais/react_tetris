@@ -16,4 +16,4 @@ export default {
   reset,
   pause,
   music,
-} as { [key: string]: { [key: string]: any } };
+} as { [key: string]: { down: () => void; up: () => void } };

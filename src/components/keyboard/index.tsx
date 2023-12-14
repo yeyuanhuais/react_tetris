@@ -1,11 +1,10 @@
 import todo from "@/control/todo";
-import store from "@/store";
 import { KeyboardState } from "@/store/keyboard";
+import { areObjectsEqual, stopPropagation } from "@/unit";
 import { i18nData, lan } from "@/unit/const";
 import React from "react";
 import Button from "./button";
 import style from "./index.module.less";
-import { areArraysEqual } from "@/unit";
 
 type Constructor = { keyboard: KeyboardState; filling: number };
 type Props = Readonly<Constructor>;
@@ -19,104 +18,78 @@ export default class Keyboard extends React.Component<Required<Props>, State> {
   dom_left: Button | null;
   dom_right: Button | null;
   dom_space: Button | null;
-  dom_r: Button | null;
-  dom_s: Button | null;
-  dom_p: Button | null;
+  dom_reset: Button | null;
+  dom_music: Button | null;
+  dom_pause: Button | null;
+  constructor(props: Props) {
+    super(props);
+    this.dom_rotate = null;
+    this.dom_down = null;
+    this.dom_left = null;
+    this.dom_right = null;
+    this.dom_space = null;
+    this.dom_reset = null;
+    this.dom_music = null;
+    this.dom_pause = null;
+  }
   componentDidMount() {
-    const touchEventCatch = {}; // 对于手机操作, 触发了touchstart, 将作出记录, 不再触发后面的mouse事件
+    const touchEventCatch: Record<string, boolean> = {}; // 对于手机操作, 触发了touchstart, 将作出记录, 不再触发后面的mouse事件
 
     // 在鼠标触发mousedown时, 移除元素时可以不触发mouseup, 这里做一个兼容, 以mouseout模拟mouseup
-    const mouseDownEventCatch = {};
-    document.addEventListener(
-      "touchstart",
-      (e) => {
-        if (e.preventDefault) {
-          e.preventDefault();
-        }
-      },
-      true,
-    );
-
-    // 解决issue: https://github.com/chvin/react-tetris/issues/24
-    document.addEventListener(
-      "touchend",
-      (e) => {
-        if (e.preventDefault) {
-          e.preventDefault();
-        }
-      },
-      true,
-    );
-
-    // 阻止双指放大
-    document.addEventListener("gesturestart", (e) => {
-      if (e.preventDefault) {
-        e.preventDefault();
-      }
-    });
-
-    document.addEventListener(
-      "mousedown",
-      (e) => {
-        if (e.preventDefault) {
-          e.preventDefault();
-        }
-      },
-      true,
-    );
-
+    const mouseDownEventCatch: Record<string, boolean> = {};
+    stopPropagation();
     Object.keys(todo).forEach((key) => {
-      this[`dom_${key}`].dom.addEventListener(
+      (this as any)[`dom_${key}`].dom.addEventListener(
         "mousedown",
         () => {
           if (touchEventCatch[key] === true) {
             return;
           }
-          todo[key].down(store);
+          todo[key].down();
           mouseDownEventCatch[key] = true;
         },
         true,
       );
-      this[`dom_${key}`].dom.addEventListener(
+      (this as any)[`dom_${key}`].dom.addEventListener(
         "mouseup",
         () => {
           if (touchEventCatch[key] === true) {
             touchEventCatch[key] = false;
             return;
           }
-          todo[key].up(store);
+          todo[key].up();
           mouseDownEventCatch[key] = false;
         },
         true,
       );
-      this[`dom_${key}`].dom.addEventListener(
+      (this as any)[`dom_${key}`].dom.addEventListener(
         "mouseout",
         () => {
           if (mouseDownEventCatch[key] === true) {
-            todo[key].up(store);
+            todo[key].up();
           }
         },
         true,
       );
-      this[`dom_${key}`].dom.addEventListener(
+      (this as any)[`dom_${key}`].dom.addEventListener(
         "touchstart",
         () => {
           touchEventCatch[key] = true;
-          todo[key].down(store);
+          todo[key].down();
         },
         true,
       );
-      this[`dom_${key}`].dom.addEventListener(
+      (this as any)[`dom_${key}`].dom.addEventListener(
         "touchend",
         () => {
-          todo[key].up(store);
+          todo[key].up();
         },
         true,
       );
     });
   }
-  shouldComponentUpdate({ keyboard, filling }:Constructor) {
-    return !areArraysEqual(keyboard, this.props.keyboard) || filling !== this.props.filling;
+  shouldComponentUpdate({ keyboard, filling }: Constructor) {
+    return !areObjectsEqual(keyboard, this.props.keyboard) || filling !== this.props.filling;
   }
   render() {
     const keyboard = this.props.keyboard;
@@ -195,7 +168,7 @@ export default class Keyboard extends React.Component<Required<Props>, State> {
           label={`${i18nData.reset[lan]}(R)`}
           active={keyboard.reset}
           ref={(c) => {
-            this.dom_r = c;
+            this.dom_reset = c;
           }}
         />
         <Button
@@ -206,7 +179,7 @@ export default class Keyboard extends React.Component<Required<Props>, State> {
           label={`${i18nData.sound[lan]}(S)`}
           active={keyboard.music}
           ref={(c) => {
-            this.dom_s = c;
+            this.dom_music = c;
           }}
         />
         <Button
@@ -217,7 +190,7 @@ export default class Keyboard extends React.Component<Required<Props>, State> {
           label={`${i18nData.pause[lan]}(P)`}
           active={keyboard.pause}
           ref={(c) => {
-            this.dom_p = c;
+            this.dom_pause = c;
           }}
         />
       </div>

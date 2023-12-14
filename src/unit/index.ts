@@ -77,10 +77,13 @@ export const isClear = (matrix: number[][]): number[] | false => {
 export const isOver = (matrix: number[][]) => {
   return matrix[0].some((n: any) => !!n);
 };
-/* 将状态记录到local storage */
+/**
+ * @description 将状态记录到local storage
+ */
 export const subscribeRecord = (store: ToolkitStore<StoreReducer, AnyAction, [ThunkMiddleware<StoreReducer, AnyAction>]>) => {
   store.subscribe(() => {
-    let data = store.getState();
+    const data = store.getState();
+    console.log("%c data", "font-size:13px; background:pink; color:#bf2c9f;", data);
     if (data.lock) {
       // 状态为锁定时不记录
       return;
@@ -102,35 +105,178 @@ export const isMobile = () => {
   return android || iphone || ipad || ipod || nokiaN;
 };
 /**
- * @description 对比两个数组是否相等
- * @param { Boolean }
- * @return { Boolean }
+ * @description 对比两个对象是否相等
  */
-export function areArraysEqual<T>(arr1: T[] | null, arr2: T[] | null): boolean {
-  if (arr1 === null && arr2 == null) {
+export function areObjectsEqual(obj1: Record<string, any> | null, obj2: Record<string, any> | null, cache = new Map()): boolean {
+  if (obj1 === obj2) {
     return true;
-  } else if (arr1 === null || arr2 == null) {
-    return false;
-  }
-  if (arr1.length !== arr2.length) {
-    return false;
   }
 
-  for (let i = 0; i < arr1.length; i++) {
-    const value1 = arr1[i];
-    const value2 = arr2[i];
-    if (Array.isArray(value1) && Array.isArray(value2)) {
-      // 如果元素是数组，则递归比较
-      if (!areArraysEqual(value1, value2)) {
-        return false;
+  const cacheKey = `${obj1},${obj2}`;
+  if (cache.has(cacheKey)) {
+    return true; // 已经比较过的对象，直接返回结果
+  }
+
+  if (!obj1 || !obj2) {
+    const result = obj1 === obj2;
+    cache.set(cacheKey, result);
+    return result;
+  }
+
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  if (keys1.length !== keys2.length) {
+    const result = false;
+    cache.set(cacheKey, result);
+    return result;
+  }
+
+  for (const key of keys1) {
+    const val1 = obj1[key];
+    const val2 = obj2[key];
+
+    if (val1 === val2) {
+      continue;
+    }
+
+    if ((val1 === null || val1 === undefined) && (val2 === null || val2 === undefined)) {
+      continue;
+    }
+
+    if (val1 instanceof Date && val2 instanceof Date) {
+      if (val1.getTime() !== val2.getTime()) {
+        const result = false;
+        cache.set(cacheKey, result);
+        return result;
       }
-    } else {
-      // 否则直接比较元素值
-      if (value1 !== value2) {
-        return false;
+    } else if (typeof val1 === "object" && typeof val2 === "object") {
+      if (!areObjectsEqual(val1, val2, cache)) {
+        const result = false;
+        cache.set(cacheKey, result);
+        return result;
+      }
+    } else if (val1 !== val2) {
+      if (!(val1 === undefined || val2 === undefined) && typeof val1 !== "function" && typeof val2 !== "function") {
+        const result = false;
+        cache.set(cacheKey, result);
+        return result;
       }
     }
   }
 
-  return true;
+  const result = true;
+  cache.set(cacheKey, result);
+  return result;
+}
+
+/**
+ * @description 对比两个数组是否相等
+ */
+export function areArraysEqual(arr1: any[] | null, arr2: any[] | null, cache = new Map()): boolean {
+  if (arr1 === arr2) {
+    return true;
+  }
+
+  const cacheKey = `${arr1},${arr2}`;
+  if (cache.has(cacheKey)) {
+    return true; // 已经比较过的数组，直接返回结果
+  }
+
+  if (!arr1 || !arr2) {
+    const result = arr1 === arr2;
+    cache.set(cacheKey, result);
+    return result;
+  }
+
+  if (arr1.length !== arr2.length) {
+    const result = false;
+    cache.set(cacheKey, result);
+    return result;
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    const elem1 = arr1[i];
+    const elem2 = arr2[i];
+
+    if (elem1 === elem2) {
+      continue;
+    }
+
+    if ((elem1 === null || elem1 === undefined) && (elem2 === null || elem2 === undefined)) {
+      continue;
+    }
+
+    if (elem1 instanceof Date && elem2 instanceof Date) {
+      if (elem1.getTime() !== elem2.getTime()) {
+        const result = false;
+        cache.set(cacheKey, result);
+        return result;
+      }
+    } else if (Array.isArray(elem1) && Array.isArray(elem2)) {
+      if (!areArraysEqual(elem1, elem2, cache)) {
+        const result = false;
+        cache.set(cacheKey, result);
+        return result;
+      }
+    } else if (typeof elem1 === "object" && typeof elem2 === "object") {
+      if (!areObjectsEqual(elem1, elem2, cache)) {
+        const result = false;
+        cache.set(cacheKey, result);
+        return result;
+      }
+    } else if (elem1 !== elem2) {
+      if (!(elem1 === undefined || elem2 === undefined) && typeof elem1 !== "function" && typeof elem2 !== "function") {
+        const result = false;
+        cache.set(cacheKey, result);
+        return result;
+      }
+    }
+  }
+
+  const result = true;
+  cache.set(cacheKey, result);
+  return result;
+}
+/**
+ * @description 阻止原生点击事件
+ */
+export function stopPropagation() {
+  document.addEventListener(
+    "touchstart",
+    (e) => {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+    },
+    true,
+  );
+
+  // 解决issue: https://github.com/chvin/react-tetris/issues/24
+  document.addEventListener(
+    "touchend",
+    (e) => {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+    },
+    true,
+  );
+
+  // 阻止双指放大
+  document.addEventListener("gesturestart", (e) => {
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+  });
+
+  document.addEventListener(
+    "mousedown",
+    (e) => {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+    },
+    true,
+  );
 }

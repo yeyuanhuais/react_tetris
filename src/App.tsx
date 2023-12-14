@@ -10,12 +10,13 @@ import Number from "@/components/number";
 import Pause from "@/components/pause";
 import Point from "@/components/point";
 import { states } from "@/control/states";
+import { useAppSelector } from "@/hook/storeHook";
+import { useResize } from "@/hook/useResize";
+import { StoreReducer } from "@/store";
 import { isFocus, visibilityChangeEvent } from "@/unit/";
 import { TransForm, i18nData, lan, lastRecord, speeds, transform } from "@/unit/const";
 import classnames from "classnames";
-import React from "react";
-import { connect } from "react-redux";
-import { StoreReducer } from "./store";
+import { useEffect, useState } from "react";
 
 interface CssProps {
   paddingTop?: number;
@@ -27,21 +28,13 @@ interface CssProps {
   mozTransform?: string;
   oTransform?: string;
 }
-type Props = Readonly<StoreReducer>;
-type State = {
-  w: number;
-  h: number;
-};
-class App extends React.Component<Props, State> {
-  constructor(props: Readonly<StoreReducer>) {
-    super(props);
-    this.state = {
-      w: document.documentElement.clientWidth,
-      h: document.documentElement.clientHeight,
-    };
-  }
-  componentDidMount() {
-    window.addEventListener("resize", this.resize.bind(this), true);
+export default function App() {
+  const { pause, music, speedRun, drop, cur, matrix, reset, points, max, clearLines, speedStart, startLines, keyboard, next } = useAppSelector(
+    (state: StoreReducer) => state,
+  );
+  const [width, height] = useResize();
+  const [filling, setFilling] = useState(0);
+  useEffect(() => {
     if (visibilityChangeEvent) {
       // 将页面的焦点变换写入store
       document.addEventListener(
@@ -52,12 +45,12 @@ class App extends React.Component<Props, State> {
         false,
       );
     }
-
+  }, []);
+  useEffect(() => {
     if (lastRecord) {
       // 读取记录
       if (lastRecord.cur && !lastRecord.pause) {
         // 拿到上一次游戏的状态, 如果在游戏中且没有暂停, 游戏继续
-        const speedRun = this.props.speedRun;
         let timeout = speeds[speedRun - 1] / 2; // 继续时, 给予当前下落速度一半的停留时间
         // 停留时间不小于最快速的速度
         timeout = speedRun < speeds[speeds.length - 1] ? speeds[speeds.length - 1] : speedRun;
@@ -69,83 +62,55 @@ class App extends React.Component<Props, State> {
     } else {
       states.overStart();
     }
-  }
-  resize() {
-    this.setState({
-      w: document.documentElement.clientWidth,
-      h: document.documentElement.clientHeight,
-    });
-  }
-  render() {
-    let filling = 0;
-    const size = (() => {
-      const w = this.state.w;
-      const h = this.state.h;
-      const ratio = h / w;
-      let scale;
-      let css: CssProps | TransForm = {};
-      if (ratio < 1.5) {
-        scale = h / 960;
-      } else {
-        scale = w / 640;
-        filling = (h - 960 * scale) / scale / 3;
-        css = {
-          paddingTop: Math.floor(filling) + 42,
-          paddingBottom: Math.floor(filling),
-          marginTop: Math.floor(-480 - filling * 1.5),
-        };
-      }
-      css[transform] = `scale(${scale})`;
-      return css;
-    })();
+  }, [speedRun]);
 
-    return (
-      <div className={style.app} style={size}>
-        <div className={classnames({ [style.rect]: true, [style.drop]: this.props.drop })}>
-          <Decorate />
-          <div className={style.screen}>
-            <div className={style.panel}>
-              <Matrix matrix={this.props.matrix} cur={this.props.cur} reset={this.props.reset} />
-              <Logo cur={!!this.props.cur} reset={this.props.reset} />
-              <div className={style.state}>
-                <Point cur={!!this.props.cur} point={this.props.points} max={this.props.max} />
-                <p>{this.props.cur ? i18nData.cleans[lan] : i18nData.startLine[lan]}</p>
-                <Number number={this.props.cur ? this.props.clearLines : this.props.startLines} />
-                <p>{i18nData.level[lan]}</p>
-                <Number number={this.props.cur ? this.props.speedRun : this.props.speedStart} length={1} />
-                <p>{i18nData.next[lan]}</p>
-                <Next data={this.props.next} />
-                <div className={style.bottom}>
-                  <Music data={this.props.music} />
-                  <Pause data={this.props.pause} />
-                  <Number time />
-                </div>
+  const size = () => {
+    const w = width;
+    const h = height;
+    const ratio = h / w;
+    let scale;
+    let css: CssProps | TransForm = {};
+    if (ratio < 1.5) {
+      scale = h / 960;
+    } else {
+      scale = w / 640;
+      setFilling((h - 960 * scale) / scale / 3);
+      css = {
+        paddingTop: Math.floor(filling) + 42,
+        paddingBottom: Math.floor(filling),
+        marginTop: Math.floor(-480 - filling * 1.5),
+      };
+    }
+    css[transform] = `scale(${scale})`;
+    return css;
+  };
+  return (
+    <div className={style.app} style={size()}>
+      {/* <div className={classnames({ [style.rect]: true, [style.drop]: drop })}>
+        <Decorate />
+        <div className={style.screen}>
+          <div className={style.panel}>
+            <Matrix matrix={matrix} cur={cur} reset={reset} />
+            <Logo cur={!!cur} reset={reset} />
+            <div className={style.state}>
+              <Point cur={!!cur} point={points} max={max} />
+              <p>{cur ? i18nData.cleans[lan] : i18nData.startLine[lan]}</p>
+              <Number number={cur ? clearLines : startLines} />
+              <p>{i18nData.level[lan]}</p>
+              <Number number={cur ? speedRun : speedStart} length={1} />
+              <p>{i18nData.next[lan]}</p>
+              <Next data={next} />
+              <div className={style.bottom}>
+                <Music data={music} />
+                <Pause data={pause} />
+                <Number time />
               </div>
             </div>
           </div>
         </div>
-        <Keyboard filling={filling} keyboard={this.props.keyboard} />
-        <Guide />
-      </div>
-    );
-  }
+      </div> */}
+      {/* <Keyboard filling={filling} keyboard={keyboard} /> */}
+      {/* <Guide /> */}
+    </div>
+  );
 }
-
-const mapStateToProps = (state: StoreReducer) => ({
-  pause: state["pause"],
-  music: state["music"],
-  matrix: state["matrix"],
-  next: state["next"],
-  cur: state["cur"],
-  speedStart: state["speedStart"],
-  speedRun: state["speedRun"],
-  startLines: state["startLines"],
-  clearLines: state["clearLines"],
-  points: state["points"],
-  max: state["max"],
-  reset: state["reset"],
-  drop: state["drop"],
-  keyboard: state["keyboard"],
-});
-
-export default connect(mapStateToProps)(App);
