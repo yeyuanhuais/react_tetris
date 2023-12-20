@@ -1,11 +1,11 @@
-import { blankMatrix, lastRecord } from "@/unit/const";
+import { blankMatrix,  } from "@/unit/const";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 // 定义 slice state 的类型
 export type MatrixState = number[][];
 
 // 使用该类型定义初始 state
-const initialState: MatrixState = lastRecord && Array.isArray(lastRecord.matrix) ? lastRecord.matrix.map((e) => e) : blankMatrix;
+const initialState: MatrixState = blankMatrix;
 
 export const matrixSlice = createSlice({
   name: "matrix",

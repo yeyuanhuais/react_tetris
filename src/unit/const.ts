@@ -59,24 +59,7 @@ export const delays = [50, 60, 70, 80, 90, 100];
 
 export const fillLine = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 export const eachLines = 20; // 每消除eachLines行, 增加速度
-/*  上一把的状态 */
-export const lastRecord = ((): StoreReducer | false => {
-  try {
-    let data = localStorage.getItem(StorageKey);
-    if (!data) {
-      return false;
-    }
-    data = atob(data);
-    data = decodeURIComponent(data);
-    data = JSON.parse(data);
-    return data as unknown as StoreReducer;
-  } catch (error) {
-    if (window.console) {
-      window.console.error("读取记录错误", error);
-    }
-    return false;
-  }
-})();
+
 export const blankMatrix = (() => {
   const matrix = [];
   for (let i = 0; i < 20; i++) {

@@ -18,22 +18,20 @@ export default class Guide extends React.Component<Required<Props>, State> {
       QRCode: "",
     };
   }
-  shouldComponentUpdate(state: State) {
-    if (state.isMobile) {
-      return false;
-    }
-    QRCode.toDataURL(location.href, { margin: 1 }).then((dataUrl: string) => this.setState({ QRCode: dataUrl }));
-    if (state.QRCode === this.state.QRCode) {
-      return false;
-    }
-    return true;
+  componentDidMount() {
+    if (this.state.isMobile) return;
+    QRCode.toDataURL(location.href, { margin: 1 }).then((dataUrl) => this.setState({ QRCode: dataUrl }));
+  }
+  shouldComponentUpdate(_: Readonly<Required<Props>>, nextState: Readonly<State>) {
+    return nextState.QRCode !== this.state.QRCode;
   }
   render() {
-    if (this.state.isMobile) {
+    const { isMobile, QRCode } = this.state;
+    if (isMobile) {
       return null;
     }
     return (
-      <div style={{ display: this.state.isMobile ? "none" : "block" }}>
+      <div style={{ display: isMobile ? "none" : "block" }}>
         <div className={`${style.guide} ${style.right}`}>
           <div className={style.up}>
             <em style={{ [transform]: "translate(0,-3px) scale(1,2)" }} />
@@ -51,9 +49,9 @@ export default class Guide extends React.Component<Required<Props>, State> {
         <div className={`${style.guide} ${style.left}`}>
           <div className={style.space}>SPACE</div>
         </div>
-        {this.state.QRCode !== "" ? (
+        {QRCode !== "" ? (
           <div className={`${style.guide} ${style.qr}`}>
-            <img src={this.state.QRCode} alt={i18nData.QRCode[lan]} />
+            <img src={QRCode} alt={i18nData.QRCode[lan]} />
           </div>
         ) : null}
       </div>

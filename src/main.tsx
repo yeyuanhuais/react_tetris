@@ -1,16 +1,17 @@
 import App from "@/App";
 import "@/index.css";
-import store from "@/store";
-import { subscribeRecord } from "@/unit";
+import store, { persistor } from "@/store";
 import * as React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
-subscribeRecord(store); // 将更新的状态记录到
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
     </Provider>
   </React.StrictMode>,
 );

@@ -77,23 +77,6 @@ export const isClear = (matrix: number[][]): number[] | false => {
 export const isOver = (matrix: number[][]) => {
   return matrix[0].some((n: any) => !!n);
 };
-/**
- * @description 将状态记录到local storage
- */
-export const subscribeRecord = (store: ToolkitStore<StoreReducer, AnyAction, [ThunkMiddleware<StoreReducer, AnyAction>]>) => {
-  store.subscribe(() => {
-    const data = store.getState();
-    console.log("%c data", "font-size:13px; background:pink; color:#bf2c9f;", data);
-    if (data.lock) {
-      // 状态为锁定时不记录
-      return;
-    }
-    let dataJson = JSON.stringify(data);
-    dataJson = encodeURIComponent(dataJson);
-    dataJson = btoa(dataJson);
-    localStorage.setItem(StorageKey, dataJson);
-  });
-};
 /* 判断是否为移动端 */
 export const isMobile = () => {
   const ua = navigator.userAgent;

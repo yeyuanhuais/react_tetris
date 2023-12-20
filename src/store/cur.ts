@@ -1,6 +1,6 @@
 import { getNextType } from "@/unit";
 import Block from "@/unit/block";
-import { lastRecord } from "@/unit/const";
+
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 // 定义 slice state 的类型
@@ -11,20 +11,7 @@ export interface CurAction {
 }
 export type CurState = Block | null;
 // 使用该类型定义初始 state
-const initialState: CurState = (() => {
-  if (!lastRecord || !lastRecord.cur) {
-    return null;
-  }
-  const { cur } = lastRecord;
-  const option = {
-    type: cur.type,
-    rotateIndex: cur.rotateIndex,
-    shape: cur.shape.map((e) => e),
-    xy: cur.xy,
-  };
-  let block = new Block(option);
-  return block;
-})();
+const initialState: CurState = null;
 export const curSlice = createSlice({
   name: "cur",
   initialState,

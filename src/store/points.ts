@@ -1,10 +1,10 @@
-import { lastRecord, maxPoint } from "@/unit/const";
+import {  maxPoint } from "@/unit/const";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
 export type PointsState = number;
 
 // 使用该类型定义初始 state
-let initialState: PointsState = lastRecord && lastRecord.points ? lastRecord.points : 0;
+let initialState: PointsState =  0;
 if (initialState < 0) {
   initialState = 0;
 } else if (initialState > maxPoint) {

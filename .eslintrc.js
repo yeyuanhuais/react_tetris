@@ -9,12 +9,9 @@ exports = {
     // 检查依赖项的声明
     "react-hooks/exhaustive-deps": "error",
   },
-  settings: {
-    react: {
-      version: "detect",
-    },
-  },
   parserOptions: {
     sourceType: "module",
+    ecmaVersion: 2020,
+    parser: "@typescript-eslint/parser",
   },
 };

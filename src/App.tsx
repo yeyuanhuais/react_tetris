@@ -14,9 +14,9 @@ import { useAppSelector } from "@/hook/storeHook";
 import { useResize } from "@/hook/useResize";
 import { StoreReducer } from "@/store";
 import { isFocus, visibilityChangeEvent } from "@/unit/";
-import { TransForm, i18nData, lan, lastRecord, speeds, transform } from "@/unit/const";
+import { TransForm, i18nData, lan,  speeds, transform } from "@/unit/const";
 import classnames from "classnames";
-import { useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 
 interface CssProps {
   paddingTop?: number;
@@ -28,10 +28,21 @@ interface CssProps {
   mozTransform?: string;
   oTransform?: string;
 }
-export default function App() {
-  const { pause, music, speedRun, drop, cur, matrix, reset, points, max, clearLines, speedStart, startLines, keyboard, next } = useAppSelector(
-    (state: StoreReducer) => state,
-  );
+function App() {
+  const speedRun = useAppSelector((state: StoreReducer) => state.speedRun);
+  const pause = useAppSelector((state: StoreReducer) => state.pause);
+  const music = useAppSelector((state: StoreReducer) => state.music);
+  const drop = useAppSelector((state: StoreReducer) => state.drop);
+  const cur = useAppSelector((state: StoreReducer) => state.cur);
+  const matrix = useAppSelector((state: StoreReducer) => state.matrix);
+  const reset = useAppSelector((state: StoreReducer) => state.reset);
+  const points = useAppSelector((state: StoreReducer) => state.points);
+  const max = useAppSelector((state: StoreReducer) => state.max);
+  const clearLines = useAppSelector((state: StoreReducer) => state.clearLines);
+  const speedStart = useAppSelector((state: StoreReducer) => state.speedStart);
+  const startLines = useAppSelector((state: StoreReducer) => state.startLines);
+  const keyboard = useAppSelector((state: StoreReducer) => state.keyboard);
+  const next = useAppSelector((state: StoreReducer) => state.next);
   const [width, height] = useResize();
   const [filling, setFilling] = useState(0);
   useEffect(() => {
@@ -47,24 +58,29 @@ export default function App() {
     }
   }, []);
   useEffect(() => {
-    if (lastRecord) {
       // 读取记录
-      if (lastRecord.cur && !lastRecord.pause) {
+      if (cur && !pause) {
         // 拿到上一次游戏的状态, 如果在游戏中且没有暂停, 游戏继续
         let timeout = speeds[speedRun - 1] / 2; // 继续时, 给予当前下落速度一半的停留时间
         // 停留时间不小于最快速的速度
         timeout = speedRun < speeds[speeds.length - 1] ? speeds[speeds.length - 1] : speedRun;
         states.auto(timeout);
       }
-      if (!lastRecord.cur) {
+      if (!cur) {
         states.overStart();
       }
-    } else {
-      states.overStart();
+  }, []);
+  useEffect(() => {
+    const w = width;
+    const h = height;
+    const ratio = h / w;
+    let scale;
+    if (ratio >= 1.5) {
+      scale = w / 640;
+      setFilling((h - 960 * scale) / scale / 3);
     }
-  }, [speedRun]);
-
-  const size = () => {
+  }, [width, height]);
+  const size = useCallback(() => {
     const w = width;
     const h = height;
     const ratio = h / w;
@@ -74,7 +90,6 @@ export default function App() {
       scale = h / 960;
     } else {
       scale = w / 640;
-      setFilling((h - 960 * scale) / scale / 3);
       css = {
         paddingTop: Math.floor(filling) + 42,
         paddingBottom: Math.floor(filling),
@@ -83,10 +98,10 @@ export default function App() {
     }
     css[transform] = `scale(${scale})`;
     return css;
-  };
+  }, [filling, height, width]);
   return (
     <div className={style.app} style={size()}>
-      {/* <div className={classnames({ [style.rect]: true, [style.drop]: drop })}>
+      <div className={classnames({ [style.rect]: true, [style.drop]: drop })}>
         <Decorate />
         <div className={style.screen}>
           <div className={style.panel}>
@@ -108,9 +123,10 @@ export default function App() {
             </div>
           </div>
         </div>
-      </div> */}
-      {/* <Keyboard filling={filling} keyboard={keyboard} /> */}
-      {/* <Guide /> */}
+      </div>
+      <Keyboard filling={filling} keyboard={keyboard} />
+      <Guide />
     </div>
   );
 }
+export default memo(App);

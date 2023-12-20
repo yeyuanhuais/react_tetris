@@ -1,10 +1,10 @@
-import { lastRecord } from "@/unit/const";
+
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
-export type DropState =boolean
+export type DropState = boolean;
 
 // 使用该类型定义初始 state
-const initialState: DropState = lastRecord && lastRecord.drop ? !!lastRecord.drop : false;
+const initialState: DropState =  false;
 export const dropSlice = createSlice({
   name: "drop",
   initialState,

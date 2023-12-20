@@ -1,10 +1,10 @@
-import { lastRecord } from "@/unit/const";
+
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
-export type LockState =boolean
+export type LockState = boolean;
 
 // 使用该类型定义初始 state
-const initialState: LockState = lastRecord && lastRecord.lock ? !!lastRecord.lock : false;
+const initialState: LockState =  false;
 export const lockSlice = createSlice({
   name: "lock",
   initialState,

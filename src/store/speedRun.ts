@@ -1,10 +1,10 @@
-import { lastRecord } from "@/unit/const";
+
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
 export type SpeedRunState = number;
 
 // 使用该类型定义初始 state
-let initialState: number = lastRecord && lastRecord.speedStart ? lastRecord.speedStart : 1;
+let initialState: number =  1;
 if (initialState < 1 || initialState > 6) {
   initialState = 1;
 }

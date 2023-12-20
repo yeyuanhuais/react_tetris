@@ -1,10 +1,10 @@
-import { lastRecord } from "@/unit/const";
+
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
 export type PauseState =boolean
 
 // 使用该类型定义初始 state
-const initialState: PauseState = lastRecord && lastRecord.pause ? !!lastRecord.pause : false;
+const initialState: PauseState =  false;
 export const pauseSlice = createSlice({
   name: "pause",
   initialState,
