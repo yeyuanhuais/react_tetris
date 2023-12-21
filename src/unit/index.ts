@@ -1,8 +1,5 @@
-import { StoreReducer } from "@/store";
 import { CurType } from "@/store/cur";
-import { AnyAction, ThunkMiddleware } from "@reduxjs/toolkit";
-import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
-import { StorageKey, blockType } from "./const";
+import { blockType } from "./const";
 
 /**
  * @description document[hiddenProperty] 可以判断页面是否失去焦点

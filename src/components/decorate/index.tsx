@@ -1,8 +1,8 @@
-import React from 'react';
-import cn from 'classnames';
+import cn from "classnames";
+import React from "react";
 
-import { i18nData, lan } from '@/unit/const';
-import style from './index.module.less';
+import { i18nData, lan } from "@/unit/const";
+import style from "./index.module.less";
 
 export default class Decorate extends React.Component {
   shouldComponentUpdate() {
@@ -12,16 +12,16 @@ export default class Decorate extends React.Component {
     return (
       <div className={style.decorate}>
         <div className={style.topBorder}>
-          <span className={cn(['l', style.mr])} style={{ width: 40 }} />
-          <span className={cn(['l', style.mr])} />
-          <span className={cn(['l', style.mr])} />
-          <span className={cn(['l', style.mr])} />
-          <span className={cn(['l', style.mr])} />
-          <span className={cn(['r', style.ml])} style={{ width: 40 }} />
-          <span className={cn(['r', style.ml])} />
-          <span className={cn(['r', style.ml])} />
-          <span className={cn(['r', style.ml])} />
-          <span className={cn(['r', style.ml])} />
+          <span className={cn(["l", style.mr])} style={{ width: 40 }} />
+          <span className={cn(["l", style.mr])} />
+          <span className={cn(["l", style.mr])} />
+          <span className={cn(["l", style.mr])} />
+          <span className={cn(["l", style.mr])} />
+          <span className={cn(["r", style.ml])} style={{ width: 40 }} />
+          <span className={cn(["r", style.ml])} />
+          <span className={cn(["r", style.ml])} />
+          <span className={cn(["r", style.ml])} />
+          <span className={cn(["r", style.ml])} />
         </div>
         <h1>{i18nData.title[lan]}</h1>
         <div className={style.view}>

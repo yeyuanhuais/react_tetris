@@ -14,7 +14,7 @@ import { useAppSelector } from "@/hook/storeHook";
 import { useResize } from "@/hook/useResize";
 import { StoreReducer } from "@/store";
 import { isFocus, visibilityChangeEvent } from "@/unit/";
-import { TransForm, i18nData, lan,  speeds, transform } from "@/unit/const";
+import { TransForm, i18nData, lan, speeds, transform } from "@/unit/const";
 import classnames from "classnames";
 import { memo, useCallback, useEffect, useState } from "react";
 
@@ -45,6 +45,7 @@ function App() {
   const next = useAppSelector((state: StoreReducer) => state.next);
   const [width, height] = useResize();
   const [filling, setFilling] = useState(0);
+  const [scale, setScale] = useState(0);
   useEffect(() => {
     if (visibilityChangeEvent) {
       // 将页面的焦点变换写入store
@@ -58,47 +59,43 @@ function App() {
     }
   }, []);
   useEffect(() => {
-      // 读取记录
-      if (cur && !pause) {
-        // 拿到上一次游戏的状态, 如果在游戏中且没有暂停, 游戏继续
-        let timeout = speeds[speedRun - 1] / 2; // 继续时, 给予当前下落速度一半的停留时间
-        // 停留时间不小于最快速的速度
-        timeout = speedRun < speeds[speeds.length - 1] ? speeds[speeds.length - 1] : speedRun;
-        states.auto(timeout);
-      }
-      if (!cur) {
-        states.overStart();
-      }
-  }, []);
+    // 读取记录
+    if (cur && !pause) {
+      // 拿到上一次游戏的状态, 如果在游戏中且没有暂停, 游戏继续
+      let timeout = speeds[speedRun - 1] / 2; // 继续时, 给予当前下落速度一半的停留时间
+      // 停留时间不小于最快速的速度
+      timeout = speedRun < speeds[speeds.length - 1] ? speeds[speeds.length - 1] : speedRun;
+      states.auto(timeout);
+    }
+    if (!cur) {
+      states.overStart();
+    }
+  }, [cur, pause, speedRun]);
   useEffect(() => {
     const w = width;
     const h = height;
     const ratio = h / w;
+    console.log("%c ratio", "font-size:13px; background:pink; color:#bf2c9f;", ratio);
     let scale;
-    if (ratio >= 1.5) {
-      scale = w / 640;
-      setFilling((h - 960 * scale) / scale / 3);
-    }
-  }, [width, height]);
-  const size = useCallback(() => {
-    const w = width;
-    const h = height;
-    const ratio = h / w;
-    let scale;
-    let css: CssProps | TransForm = {};
     if (ratio < 1.5) {
       scale = h / 960;
     } else {
       scale = w / 640;
-      css = {
-        paddingTop: Math.floor(filling) + 42,
-        paddingBottom: Math.floor(filling),
-        marginTop: Math.floor(-480 - filling * 1.5),
-      };
+      setFilling((h - 960 * scale) / scale / 2);
     }
+    setScale(scale);
+  }, [width, height]);
+  const size = useCallback(() => {
+    let css: CssProps | TransForm = {};
+    if (!isNaN(filling)) console.log("%c filling", "font-size:13px; background:pink; color:#bf2c9f;", filling);
+    css = {
+      paddingTop: Math.floor(filling) + 42,
+      paddingBottom: Math.floor(filling),
+      marginTop: Math.floor(-480 - filling * 1.5),
+    };
     css[transform] = `scale(${scale})`;
     return css;
-  }, [filling, height, width]);
+  }, [filling, scale]);
   return (
     <div className={style.app} style={size()}>
       <div className={classnames({ [style.rect]: true, [style.drop]: drop })}>

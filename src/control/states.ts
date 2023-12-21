@@ -31,7 +31,7 @@ const getStartMatrix = (startLines: number) => {
     }
     return line;
   };
-  let startMatrix = [];
+  const startMatrix = [];
   for (let i = 0; i < startLines; i++) {
     if (i <= 2) {
       startMatrix.push(getLine(5, 8));
@@ -89,7 +89,7 @@ export const states = {
         dispatch(changeCur({ type: next.type ?? "" }));
         states.fallInterval = setTimeout(fall, speeds[speedRunState - 1]);
       } else {
-        let matrix = matrixState;
+        const matrix = matrixState;
         if (!curState) {
           return;
         }
@@ -97,7 +97,7 @@ export const states = {
         shape.forEach((m: any[], k1: any) => {
           m.forEach((n: any, k2: any) => {
             if (n && xy[0] + k1 >= 0) {
-              let line = matrix[xy[0] + k1];
+              const line = matrix[xy[0] + k1];
               line[xy[1] + k2] = 1;
               matrix[xy[0] + k1] = line;
             }
@@ -143,6 +143,7 @@ export const states = {
   },
   /* 页面焦点变换 */
   focus: (isFocus: boolean) => {
+    console.log("%c isFocus", "font-size:13px; background:pink; color:#bf2c9f;", isFocus);
     dispatch(changeFocus(isFocus));
     if (!isFocus) {
       clearTimeout(states.fallInterval);
