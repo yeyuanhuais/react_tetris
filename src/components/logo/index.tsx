@@ -1,5 +1,4 @@
 import cn from "classnames";
-import propTypes from "prop-types";
 import React from "react";
 
 import { CreateOptions, i18nData, lan } from "@/unit/const";
@@ -12,7 +11,7 @@ type State = {
   display: string;
 };
 export default class Logo extends React.Component<Required<Props>, State> {
-  static timeout: NodeJS.Timeout;
+  public timeout: NodeJS.Timeout | undefined;
   constructor(props: Constructor) {
     super(props);
     this.state = {
@@ -36,7 +35,7 @@ export default class Logo extends React.Component<Required<Props>, State> {
     return cur !== this.props.cur || reset !== this.props.reset || !cur;
   }
   animate({ cur, reset }: Constructor) {
-    clearTimeout(Logo.timeout);
+    clearTimeout(this.timeout);
     this.setState({
       style: style.r1,
       display: "none",
@@ -53,7 +52,7 @@ export default class Logo extends React.Component<Required<Props>, State> {
       if (!func) {
         return;
       }
-      Logo.timeout = setTimeout(func, delay);
+      this.timeout = setTimeout(func, delay);
     };
 
     const show = (func: () => void) => {

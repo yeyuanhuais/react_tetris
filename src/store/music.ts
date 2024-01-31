@@ -1,11 +1,10 @@
-
 import { hasWebAudioAPI } from "@/unit/music";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
 export type MusicState = boolean;
 
 // 使用该类型定义初始 state
-let initialState: MusicState =  true;
+const initialState: MusicState = true;
 export const musicSlice = createSlice({
   name: "music",
   initialState,

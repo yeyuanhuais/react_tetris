@@ -59,6 +59,7 @@ export const want = (next: { xy: number[]; shape: number[][] }, matrix: number[]
 };
 /* 是否达到消除状态 */
 export const isClear = (matrix: number[][]): number[] | false => {
+  console.log("%c matrix", "font-size:13px; background:pink; color:#bf2c9f;", matrix);
   const cleatLines: number[] = [];
   matrix.forEach((m: number[], k: number) => {
     if (m.every((n: number) => !!n)) {

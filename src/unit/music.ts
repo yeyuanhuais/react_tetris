@@ -14,7 +14,7 @@ interface MusicProps {
 export let hasWebAudioAPI = !!AudioContext && location.protocol.indexOf("http") !== -1;
 
 export const music = async (): Promise<MusicProps | undefined> => {
-  let data: MusicProps = {
+  const data: MusicProps = {
     clear: function (): void {
       throw new Error("Function not implemented.");
     },
@@ -35,7 +35,7 @@ export const music = async (): Promise<MusicProps | undefined> => {
     },
     start: function (): void {
       throw new Error("Function not implemented.");
-    }
+    },
   };
   const { music: musicState } = store.getState();
   if (!hasWebAudioAPI) {

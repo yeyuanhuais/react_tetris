@@ -47,7 +47,6 @@ export const keyboardSlice = createSlice({
 });
 
 // 为每个 case reducer 函数生成 Action creators
-export const { changeKeyDown, changeKeyDrop, changeKeyLeft, changeKeyMusic, changeKeyPause, changeKeyReset, changeKeyRight, changeKeyRotate } =
-  keyboardSlice.actions;
+export const { changeKeyDown, changeKeyDrop, changeKeyLeft, changeKeyMusic, changeKeyPause, changeKeyReset, changeKeyRight, changeKeyRotate } = keyboardSlice.actions;
 
 export default keyboardSlice.reducer;

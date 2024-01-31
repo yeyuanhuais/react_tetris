@@ -3,9 +3,18 @@ import cn from "classnames";
 import React from "react";
 import style from "./index.module.less";
 
-type Constructor = { color: string; size: string; top: number; left: number; label: string; position: boolean; arrow: string; active: boolean };
+type Constructor = {
+  color: string;
+  size: string;
+  top: number;
+  left: number;
+  label: string;
+  position: boolean;
+  arrow: string;
+  active: boolean;
+};
 type Props = Readonly<CreateOptions<Constructor, "position" | "arrow">>;
-type State = {};
+type State = object;
 export default class Button extends React.Component<Required<Props>, State> {
   static defaultProps: Required<Filter<Props>> = {
     position: false,

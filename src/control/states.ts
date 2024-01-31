@@ -143,7 +143,6 @@ export const states = {
   },
   /* 页面焦点变换 */
   focus: (isFocus: boolean) => {
-    console.log("%c isFocus", "font-size:13px; background:pink; color:#bf2c9f;", isFocus);
     dispatch(changeFocus(isFocus));
     if (!isFocus) {
       clearTimeout(states.fallInterval);

@@ -12,7 +12,6 @@ type State = {
   showPause: boolean;
 };
 export default class Keyboard extends React.Component<Required<Props>, State> {
-  static propTypes: { filling: number; keyboard: KeyboardState };
   dom_rotate: Button | null;
   dom_down: Button | null;
   dom_left: Button | null;
@@ -37,7 +36,9 @@ export default class Keyboard extends React.Component<Required<Props>, State> {
 
     // 在鼠标触发mousedown时, 移除元素时可以不触发mouseup, 这里做一个兼容, 以mouseout模拟mouseup
     const mouseDownEventCatch: Record<string, boolean> = {};
+    // 禁用默认事件
     stopPropagation();
+
     Object.keys(todo).forEach((key) => {
       (this as any)[`dom_${key}`].dom.addEventListener(
         "mousedown",
@@ -98,8 +99,7 @@ export default class Keyboard extends React.Component<Required<Props>, State> {
         className={style.keyboard}
         style={{
           marginTop: 20 + this.props.filling,
-        }}
-      >
+        }}>
         <Button
           color="blue"
           size="s1"
@@ -144,7 +144,7 @@ export default class Keyboard extends React.Component<Required<Props>, State> {
           left={464}
           label={i18nData.right[lan]}
           arrow="translate(-60px, -12px) rotate(90deg)"
-          active={keyboard.left}
+          active={keyboard.right}
           ref={(c) => {
             this.dom_right = c;
           }}

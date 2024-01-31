@@ -26,13 +26,18 @@ export default class Matrix extends React.Component<Required<Props>, State> {
       overState: null,
     };
   }
-  componentDidUpdate(prevProps: Constructor) {
+  static getDerivedStateFromProps(prevProps: Constructor) {
     const clears = isClear(prevProps.matrix);
     const overs = prevProps.reset;
-    this.setState({
+    return {
       clearLines: clears,
       isOver: overs,
-    });
+    };
+  }
+  componentDidUpdate(prevProps: Constructor): void {
+    console.log("%c prevProps", "font-size:13px; background:pink; color:#bf2c9f;", prevProps);
+    const clears = isClear(prevProps.matrix);
+    const overs = prevProps.reset;
     if (clears && !this.state.clearLines) {
       this.clearAnimate();
     }
@@ -43,43 +48,34 @@ export default class Matrix extends React.Component<Required<Props>, State> {
   shouldComponentUpdate(nextProps: Constructor) {
     // 使用Immutable 比较两个List 是否相等
     const props = this.props;
-    return (!(
-      areArraysEqual(nextProps.matrix, props.matrix) &&
-      areArraysEqual(nextProps.cur && nextProps.cur.shape, props.cur && props.cur.shape) &&
-      areArraysEqual(nextProps.cur && nextProps.cur.xy, props.cur && props.cur.xy)
-    ) ||
-      this.state.clearLines ||
-      this.state.isOver) as boolean;
+    return (
+      !(
+        areArraysEqual(nextProps.matrix, props.matrix) &&
+        areArraysEqual(nextProps.cur && nextProps.cur.shape, props.cur && props.cur.shape) &&
+        areArraysEqual(nextProps.cur && nextProps.cur.xy, props.cur && props.cur.xy)
+      ) ||
+      !!this.state.clearLines ||
+      !!this.state.isOver
+    );
   }
   getResult(props = this.props) {
     const cur = props.cur;
     const shape = cur && cur.shape;
     const xy = (cur && cur.xy) ?? [];
 
-    let matrix = props.matrix;
+    const matrix = props.matrix;
     const clearLines = this.state.clearLines;
     if (clearLines) {
       const animateColor = this.state.animateColor;
       clearLines.forEach((index) => {
-        matrix[index] = [
-          animateColor,
-          animateColor,
-          animateColor,
-          animateColor,
-          animateColor,
-          animateColor,
-          animateColor,
-          animateColor,
-          animateColor,
-          animateColor,
-        ];
+        matrix[index] = [animateColor, animateColor, animateColor, animateColor, animateColor, animateColor, animateColor, animateColor, animateColor, animateColor];
       });
     } else if (shape) {
       shape.forEach((m: number[], k1: number) =>
         m.forEach((n: number, k2: number) => {
           if (n && xy[0] + k1 >= 0) {
             // 竖坐标可以为负
-            let line = matrix[xy[0] + k1];
+            const line = matrix[xy[0] + k1];
             let color;
             if (line[xy[1] + k2] === 1 && !clearLines) {
               // 矩阵与方块重合
@@ -122,7 +118,7 @@ export default class Matrix extends React.Component<Required<Props>, State> {
     });
   }
   over(nextProps: Constructor) {
-    let overState = this.getResult(nextProps);
+    const overState = this.getResult(nextProps);
     this.setState({
       overState,
     });

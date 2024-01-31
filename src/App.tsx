@@ -75,7 +75,6 @@ function App() {
     const w = width;
     const h = height;
     const ratio = h / w;
-    console.log("%c ratio", "font-size:13px; background:pink; color:#bf2c9f;", ratio);
     let scale;
     if (ratio < 1.5) {
       scale = h / 960;
@@ -87,7 +86,6 @@ function App() {
   }, [width, height]);
   const size = useCallback(() => {
     let css: CssProps | TransForm = {};
-    if (!isNaN(filling)) console.log("%c filling", "font-size:13px; background:pink; color:#bf2c9f;", filling);
     css = {
       paddingTop: Math.floor(filling) + 42,
       paddingBottom: Math.floor(filling),

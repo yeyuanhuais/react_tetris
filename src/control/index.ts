@@ -1,4 +1,3 @@
-import store from "../store";
 import todo from "./todo";
 
 const keyboard: { [key: number]: string } = {
@@ -25,10 +24,10 @@ const keyDown = (e: { metaKey: boolean; keyCode: number }) => {
     return;
   }
   keydownActive = type;
-  todo[type].down(store);
+  todo[type].down();
 };
 
-const keyUp = (e: { metaKey: boolean; keyCode: number; }) => {
+const keyUp = (e: { metaKey: boolean; keyCode: number }) => {
   if (e.metaKey === true || boardKeys.indexOf(e.keyCode) === -1) {
     return;
   }
@@ -36,7 +35,7 @@ const keyUp = (e: { metaKey: boolean; keyCode: number; }) => {
   if (type === keydownActive) {
     keydownActive = "";
   }
-  todo[type].up(store);
+  todo[type].up();
 };
 
 document.addEventListener("keydown", keyDown, true);

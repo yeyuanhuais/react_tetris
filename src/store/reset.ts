@@ -1,4 +1,3 @@
-
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 // 定义 slice state 的类型
 export type ResetState = boolean;

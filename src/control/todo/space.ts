@@ -14,7 +14,7 @@ const down = () => {
   event.down({
     key: "space",
     once: true,
-    callback: async() => {
+    callback: async () => {
       if (lockState) {
         return;
       }
@@ -24,7 +24,8 @@ const down = () => {
         if (pauseState) {
           states.pause(false);
           return;
-        }const musicData = await music();
+        }
+        const musicData = await music();
         if (musicData) {
           musicData.fall();
         }
@@ -34,7 +35,7 @@ const down = () => {
           bottom = cur.fall(index);
           index++;
         }
-        let matrix = matrixState;
+        const matrix = matrixState;
         bottom = cur.fall(index - 2);
         dispatch(changeCur(bottom));
         const shape = bottom.shape;
@@ -43,7 +44,7 @@ const down = () => {
           m.forEach((n, k2) => {
             if (n && xy[0] + k1 >= 0) {
               // 竖坐标可以为负
-              let line = matrix[xy[0] + k1];
+              const line = matrix[xy[0] + k1];
               line[xy[1] + k2] = 1;
               matrix[xy[0] + k1] = line;
             }
